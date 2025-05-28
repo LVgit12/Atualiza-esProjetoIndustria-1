@@ -30,7 +30,7 @@
         // Set chart options
         var options = {'title':'testes',
                        'width':550,
-                       'height':450};
+                       'height':202};
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
