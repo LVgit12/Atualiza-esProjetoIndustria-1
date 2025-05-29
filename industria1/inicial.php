@@ -98,7 +98,7 @@
             transition: background 0.2s;
         }
         .user-info a:hover {
-            background: #4f8cff22;
+            background:rgba(0, 0, 0, 0.13);
             text-decoration: none;
         }
         .card-body {
@@ -124,6 +124,15 @@
             max-width: 100%;
             height: auto;
             border-radius: 8px;
+        }
+        /* Label customizado para filtro de data */
+        .label-custom {
+            color: #ffeba7;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-size: 1.08rem;
+            margin-bottom: 3px;
+            text-shadow: 0 1px 2px #23243a44;
         }
         /* Responsividade */
         @media (max-width: 991.98px) {
@@ -195,10 +204,25 @@
                 height: auto;
             }
         }
+        .btn-filter-custom {
+                background: linear-gradient(90deg,#ffeba7 60%,#ffd700 100%);
+                color: #23243a;
+                font-weight: 700;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(40,41,77,0.13);
+                border: none;
+                transition: box-shadow 0.2s, transform 0.2s;
+            }
+            .btn-filter-custom:hover, .btn-filter-custom:focus {
+                box-shadow: 0 4px 16px rgba(40,41,77,0.18);
+                transform: translateY(-2px) scale(1.03);
+                color: #23243a;
+            }
     </style>
     <body>
         <div class="user-info">
             Olá, <?php echo htmlspecialchars($nomes[$id]); ?> 
+            &nbsp;|&nbsp;
             <a href="sair.php" title="Sair">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                   <path d="M6 2a2 2 0 0 0-2 2v2a.5.5 0 0 0 1 0V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-2a.5.5 0 0 0-1 0v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H6z"/>
@@ -211,71 +235,48 @@
         </div> 
         <nav class="menu-bar">
             <a href="inicial.php">HOME</a>
-            <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">CADASTRAR DADOS</a>
             <a href="desempenho.php">ACOMPANHAR DESEMPENHO</a>
-            <a href="gravar.php">SALVAR DADOS</a>
+            <a href="gravar.php">IMPRIMIR DADOS</a>
         </nav>
+        <!-- Filtro por data -->
+        <div class="container-fluid mt-3 mb-3 px-4" style="max-width:100%;">
+            <form class="row g-2 align-items-end justify-content-start" method="get" action="" style="max-width:700px;">
+                <div class="col-auto">
+                    <label for="data_inicial" class="label-custom">Data Inicial</label>
+                    <input type="date" class="form-control" id="data_inicial" name="data_inicial" value="<?php echo isset($_GET['data_inicial']) ? htmlspecialchars($_GET['data_inicial']) : ''; ?>">
+                </div>
+                <div class="col-auto">
+                    <label for="data_final" class="label-custom">Data Final</label>
+                    <input type="date" class="form-control" id="data_final" name="data_final" value="<?php echo isset($_GET['data_final']) ? htmlspecialchars($_GET['data_final']) : ''; ?>">
+                </div>
+                <div class="col-auto" style="padding-top: 28px;">
+                    <button type="submit" class="btn btn-filter-custom d-flex align-items-center px-4 py-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#23243a" class="me-2" viewBox="0 0 16 16">
+                            <path d="M6 10.117V14.5a.5.5 0 0 0 .757.429l2-1.2A.5.5 0 0 0 9 13.5v-3.383l5.447-6.516A1 1 0 0 0 13.882 2H2.118a1 1 0 0 0-.765 1.601L6 10.117z"/>
+                        </svg>
+                        <span style="font-weight:700; color:#23243a;">Filtrar</span>
+                    </button>
+                </div>
+            </form>
+        </div>
         <br>
-        <center><h2><span style="color: white;">Olá, <?php echo htmlspecialchars($nomes[$id]); ?>!</span></h2></center>
         <br/><br/>
         <div class="row justify-content-center row-cols-2 row-cols-md-3 text-center">
             <div class="cols">
                 <div class="card mb-4 rounded shadow-sw">
-                    <div class="card-header py-3" style="background-color: #ffeba7">
-                        <h3><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="black" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
-                        <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z"/>
-                        </div>
-                        </svg>&nbsp;&nbsp;<b>GRÁFICO DO DIA: <?php echo date("d/m/Y") ?></b></h3>
-                    <div class="card-body grafico-container">
-                       <?php
-                            include "grafico2.php";
-                       ?>
+                    <div class="card-header py-3" style="background-color: #23243a">
+                        <h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ffeba7" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
+                                <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z"/>
+                            </svg>&nbsp;&nbsp;<b><font color="#ffeba7">RESUMO DO DIA: <?php echo date("d/m/Y") ?></font></b>
+                        </h3>
                     </div>
-                </div>
-            </div>
-            <div class="cols">
-                <div class="card mb-4 rounded shadow-sw">
-                    <div class="card-header py-3" style="background-color: #ffeba7">
-                        <h3><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="black" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
-                        <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z"/>
-                        </svg>&nbsp;&nbsp;<b></b></h3>
-                    </div>
-                    <div class="card-body grafico-container">
+                    <div class="card-body grafico-container" style="background:#fff; border-radius:8px; min-height:420px;">
                         <?php
                             include "grafico.php";
                         ?>
                     </div>
                 </div>
             </div>
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">CADASTRAR DADOS</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-start">
-                        <form action="cadastro.php" method="post">
-                            <label class="form-label">QUANTIDADE DE FUNCIONÁRIOS PRESENTES NO DIA</label>
-                            <input class="form-control" type="number" name="nome" required>
-                            </br>
-                            <label class="form-label">NÚMERO DE UNIDADES PRODUZIDAS</label>
-                            <input class="form-control" type="number" name="email" required>
-                            </br>
-                            <label class="form-label">NÚMERO DE UNIDADES DE RETRABALHO</label>
-                            <input class="form-control" type="number" name="senha" required>
-                            </br>
-                            <label class="form-label">NÚMERO DE DEFEITOS</label>
-                            <input class="form-control" type="number" name="senha" required >
-                            </br>
-                            <input type="submit" class="btn btn-success" value="GERAR GRÁFICO">
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">FECHAR</button>
-                    </div>
-                </div>
-            </div>
-        </div>  
     </body>
 </html>

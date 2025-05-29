@@ -2,6 +2,23 @@
     session_start();
     $data = date("d/m/Y");
     $_SESSION['data'] = $data;
+     if(!isset($_SESSION['usuario'])){
+        header('Location:index.php');
+    }
+    if(!isset($_SESSION['nomes'])){
+        $emails = json_decode(file_get_contents("email.json"), true);
+        $senhas = json_decode(file_get_contents("senha.json"), true);
+        $nomes = json_decode(file_get_contents("nome.json"), true);
+        $id = array_search($_SESSION['usuario'], $emails);
+        $_SESSION['nomes'] = $nomes;
+        $_SESSION['senhas'] = $senhas;
+        $_SESSION['emails'] = $emails;
+    }
+    else{
+        $emails = $_SESSION['emails'];
+        $id = array_search($_SESSION['usuario'], $emails);
+        $nomes = $_SESSION['nomes'];
+    }
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -93,6 +110,40 @@
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(40,41,77,0.10);
         }
+        .label-custom {
+            color: #ffeba7 !important;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-size: 1.08rem;
+            margin-bottom: 3px;
+            text-shadow: 0 1px 2px #23243a44;
+        }
+        /* Adicione para inputs de data */
+        input[type="date"].form-control {
+            background-color: #23243a;
+            color: #ffeba7;
+            border: 1px solid #ffeba7;
+        }
+        input[type="date"].form-control:focus {
+            background-color: #23243a;
+            color: #ffeba7;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 0.2rem rgba(255,235,167,.25);
+        }
+        .btn-filter-custom {
+                background: linear-gradient(90deg,#ffeba7 60%,#ffd700 100%);
+                color: #23243a;
+                font-weight: 700;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(40,41,77,0.13);
+                border: none;
+                transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .btn-filter-custom:hover, .btn-filter-custom:focus {
+            box-shadow: 0 4px 16px rgba(40,41,77,0.18);
+            transform: translateY(-2px) scale(1.03);
+            color: #23243a;
+        }
         /* Responsividade */
         @media (max-width: 991.98px) {
             .user-info {
@@ -151,7 +202,7 @@
     </style>
     <body>
         <div class="user-info">
-            Olá, <?php echo isset($_SESSION['nomes']) && isset($id) ? htmlspecialchars($_SESSION['nomes'][$id]) : 'Usuário'; ?> 
+            Olá, <?php echo htmlspecialchars($nomes[$id]); ?> 
             <a href="sair.php" title="Sair">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
                   <path d="M6 2a2 2 0 0 0-2 2v2a.5.5 0 0 0 1 0V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-2a.5.5 0 0 0-1 0v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H6z"/>
@@ -169,23 +220,41 @@
             <a href="gravar.php">SALVAR DADOS</a>
         </nav>
         <div class="container mt-4">
+            <form class="row g-2 align-items-end justify-content-start mb-4" method="get" action="" style="max-width:700px;">
+                <div class="col-auto">
+                    <label for="data_inicial" class="label-custom">Data Inicial</label>
+                    <input type="date" class="form-control" id="data_inicial" name="data_inicial" style="color:#ffeba7;" value="<?php echo isset($_GET['data_inicial']) ? htmlspecialchars($_GET['data_inicial']) : ''; ?>">
+                </div>
+                <div class="col-auto">
+                    <label for="data_final" class="label-custom">Data Final</label>
+                    <input type="date" class="form-control" id="data_final" name="data_final" style="color:#ffeba7;" value="<?php echo isset($_GET['data_final']) ? htmlspecialchars($_GET['data_final']) : ''; ?>">
+                </div>
+                <div class="col-auto" style="padding-top: 28px;">
+                    <button type="submit" class="btn btn-filter-custom d-flex align-items-center px-4 py-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#23243a" class="me-2" viewBox="0 0 16 16">
+                            <path d="M6 10.117V14.5a.5.5 0 0 0 .757.429l2-1.2A.5.5 0 0 0 9 13.5v-3.383l5.447-6.516A1 1 0 0 0 13.882 2H2.118a1 1 0 0 0-.765 1.601L6 10.117z"/>
+                        </svg>
+                        <span style="font-weight:700; color:#23243a;">Filtrar</span>
+                    </button>
+                </div>
+            </form>
             <div class="row row-cols-1 row-cols-md-2 g-4">
                 <div class="col">
                     <div class="card h-100">
                         <div class="card-header" style="background-color: #ffeba7;">
-                            <b>Gráfico 1: Funcionários Presentes</b>
+                            <b>Gráfico 1: Resumo de Datas</b>
                         </div>
-                        <div class="card-body">
-                            <?php include "grafico_funcionarios.php"; ?>
+                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
+                            <?php include "grafico.php"; ?>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card h-100">
                         <div class="card-header" style="background-color: #ffeba7;">
-                            <b>Gráfico 2: Unidades Produzidas</b>
+                            <b>Gráfico 2: Quantidade Produzida</b>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
                             <?php include "grafico_produzidas.php"; ?>
                         </div>
                     </div>
@@ -193,9 +262,9 @@
                 <div class="col">
                     <div class="card h-100">
                         <div class="card-header" style="background-color: #ffeba7;">
-                            <b>Gráfico 3: Unidades de Retrabalho</b>
+                            <b>Gráfico 3: Quantidade de Refugo</b>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
                             <?php include "grafico_retrabalho.php"; ?>
                         </div>
                     </div>
@@ -203,13 +272,74 @@
                 <div class="col">
                     <div class="card h-100">
                         <div class="card-header" style="background-color: #ffeba7;">
-                            <b>Gráfico 4: Número de Defeitos</b>
+                            <b>Gráfico 4: Funcionarios Presentes</b>
                         </div>
-                        <div class="card-body">
-                            <?php include "grafico_defeitos.php"; ?>
+                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
+                            <?php include "grafico_funcionarios.php"; ?>
                         </div>
                     </div>
                 </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header" style="background-color: #ffeba7;">
+                            <b>Gráfico 5: Modelos Mais Produzidos</b>
+                        </div>
+                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
+                            <?php include "grafico_modelo.php"; ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header" style="background-color: #ffeba7;">
+                            <b>Gráfico 6: Produção por Dia</b>
+                        </div>
+                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
+                            <?php include "grafico_dias.php"; ?>
+                        </div>
+                    </div>
+                </div>
+                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #ffeba7">
+                            <h5 class="modal-title" id="exampleModalLabel">REGISTRAR DADOS</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-start" style="background-color: #28294d; color: #ffeba7;">
+                            <form action="cadastro.php" method="post">
+                                <label class="form-label">DATA DO DIA</label>
+                                <input class="form-control" type="date" name="dataDia" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
+                                </br>
+                                <label class="form-label">QUANTIDADE PRODUZIDA</label>
+                                <input class="form-control" type="number" name="QuantProd" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
+                                </br>
+                                <label class="form-label">QUANTIDADE DE REFUGO</label>
+                                <input class="form-control" type="number" name="QuantRefugo" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
+                                </br>
+                                <label class="form-label">QUANTIDADE DE FUNCIONARIOS PRESENTES</label>
+                                <input class="form-control" type="number" name="QuantFuncionarios" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
+                                </br>
+                                <label class="form-label">TEMPO DE PRODUÇÃO (Em minutos)</label>
+                                <input class="form-control" type="time" name="TempoProd" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
+                                </br>
+                                <label class="form-label">MODELO PRODUZIDO</label>
+                                <select class="form-select" arial-label="MODELO PRODUZIDO" name="ModeloProd" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
+                                    <option selected disabled></option>
+                                    <option value="Modelo A">Modelo A</option>
+                                    <option value="Modelo B">Modelo B</option>
+                                    <option value="Modelo C">Modelo C</option>
+                                    <option value="Modelo D">Modelo D</option>
+                                </select>
+                                </br>
+                                <input type="submit" class="btn btn-success" value="GERAR GRÁFICO">
+                                <input type="button" class="btn btn-outline-danger" value="FECHAR" data-bs-dismiss="modal">
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>   
             </div>
         </div>
     </body>
