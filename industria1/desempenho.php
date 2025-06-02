@@ -219,8 +219,8 @@
             <a href="desempenho.php">ACOMPANHAR DESEMPENHO</a>
             <a href="gravar.php">SALVAR DADOS</a>
         </nav>
-        <div class="container mt-4">
-            <form class="row g-2 align-items-end justify-content-start mb-4" method="get" action="" style="max-width:700px;">
+        <div class="container-fluid mt-4">
+            <form class="row g-2 align-items-end justify-content-start mb-4" method="get">
                 <div class="col-auto">
                     <label for="data_inicial" class="label-custom">Data Inicial</label>
                     <input type="date" class="form-control" id="data_inicial" name="data_inicial" style="color:#ffeba7;" value="<?php echo isset($_GET['data_inicial']) ? htmlspecialchars($_GET['data_inicial']) : ''; ?>">
@@ -238,29 +238,34 @@
                     </button>
                 </div>
             </form>
-            <div class="row row-cols-1 row-cols-md-2 g-4">
-                <div class="col">
-                    <div class="card h-100">
+            
+            <!-- Gráficos principais: 1 e 2 lado a lado, cobrindo toda a largura -->
+            <div class="row g-3 align-items-end"><!-- align-items-end para alinhar os cards pela base -->
+                <div class="col-12 col-md-6 mb-0"><!-- mb-0 remove margem inferior -->
+                    <div class="card" style="height:55vh; min-height:220px; max-height:700px; margin-bottom:0;">
                         <div class="card-header" style="background-color: #ffeba7;">
                             <b>Gráfico 1: Resumo de Datas</b>
                         </div>
-                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
+                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                             <?php include "grafico.php"; ?>
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="card h-100">
+                <div class="col-12 col-md-6 mb-0">
+                    <div class="card" style="height:55vh; min-height:220px; max-height:700px; margin-bottom:0;">
                         <div class="card-header" style="background-color: #ffeba7;">
                             <b>Gráfico 2: Quantidade Produzida</b>
                         </div>
-                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
+                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                             <?php include "grafico_produzidas.php"; ?>
                         </div>
                     </div>
                 </div>
+            </div>
+            <!-- Demais gráficos em linhas de até 3 -->
+            <div class="row row-cols-1 row-cols-md-3 g-4 mt-0 pt-0"><!-- mt-0 e pt-0 para remover margem/padding superior -->
                 <div class="col">
-                    <div class="card h-100">
+                    <div class="card h-55">
                         <div class="card-header" style="background-color: #ffeba7;">
                             <b>Gráfico 3: Quantidade de Refugo</b>
                         </div>
@@ -270,7 +275,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card h-100">
+                    <div class="card h-55">
                         <div class="card-header" style="background-color: #ffeba7;">
                             <b>Gráfico 4: Funcionarios Presentes</b>
                         </div>
@@ -280,7 +285,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card h-100">
+                    <div class="card h-55">
                         <div class="card-header" style="background-color: #ffeba7;">
                             <b>Gráfico 5: Modelos Mais Produzidos</b>
                         </div>
@@ -290,7 +295,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card h-100">
+                    <div class="card h-55">
                         <div class="card-header" style="background-color: #ffeba7;">
                             <b>Gráfico 6: Produção por Dia</b>
                         </div>
@@ -299,6 +304,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
                  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">

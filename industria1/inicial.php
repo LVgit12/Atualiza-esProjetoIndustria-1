@@ -239,7 +239,7 @@
             <a href="gravar.php">IMPRIMIR DADOS</a>
         </nav>
         <!-- Filtro por data -->
-        <div class="container-fluid mt-3 mb-3 px-4" style="max-width:100%;">
+        <div class="container-fluid mt-3 mb-3 px-4" style="max-width:100%;" >
             <form class="row g-2 align-items-end justify-content-start" method="get" action="" style="max-width:700px;">
                 <div class="col-auto">
                     <label for="data_inicial" class="label-custom">Data Inicial</label>
@@ -261,8 +261,8 @@
         </div>
         <br>
         <br/><br/>
-        <div class="row justify-content-center row-cols-2 row-cols-md-3 text-center">
-            <div class="cols">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-9">
                 <div class="card mb-4 rounded shadow-sw">
                     <div class="card-header py-3" style="background-color: #23243a">
                         <h3>
@@ -272,11 +272,10 @@
                         </h3>
                     </div>
                     <div class="card-body grafico-container" style="background:#fff; border-radius:8px; min-height:420px;">
-                        <?php
-                            include "grafico.php";
-                        ?>
+                        <?php include "grafico.php"; ?>
                     </div>
                 </div>
             </div>
+        </div>
     </body>
 </html>
