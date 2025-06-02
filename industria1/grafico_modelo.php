@@ -1,45 +1,41 @@
-<?php
-// Exemplo: dados.json = [{"ModeloProd":"Modelo A"}, {"ModeloProd":"Modelo B"}, ...]
-$modelos = ["Modelo 1", "Modelo 2", "Modelo 3", "Modelo 4"];
-$contagem = array_fill_keys($modelos, 0);
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawStuff);
 
-if (file_exists("modelos.json")) {
-    $dados = json_decode(file_get_contents("modelos.json"), true);
-    foreach ($dados as $registro) {
-        if (!empty($registro['ModeloProd']) && isset($contagem[$registro['ModeloProd']])) {
-            $contagem[$registro['ModeloProd']]++;
-        }
-    }
-}
-?>
-<div id="grafico_modelo" style="width:100%; min-width:320px; max-width:550px; height:250px; margin:auto; background:#fff; border-radius:8px;"></div>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-  google.charts.load('current', {'packages':['corechart']});
-  google.charts.setOnLoadCallback(drawChartModelo);
+      function drawStuff() {
+        var data = new google.visualization.arrayToDataTable([
+          ['Opening Move', 'Percentage'],
+          ["King's pawn (e4)", 44],
+          ["Queen's pawn (d4)", 31],
+          ["Knight to King 3 (Nf3)", 12],
+          ["Queen's bishop pawn (c4)", 10],
+          ['Other', 3]
+        ]);
 
-  function drawChartModelo() {
-    var data = google.visualization.arrayToDataTable([
-      ['Modelo', 'Produzidos'],
-      <?php
-      foreach ($contagem as $modelo => $qtd) {
-          echo "['$modelo', $qtd],";
-      }
-      ?>
-    ]);
+        var options = {
+          title: 'Chess opening moves',
+          width: 900,
+          legend: { position: 'none' },
+          chart: { title: 'Chess opening moves',
+                   subtitle: 'popularity by percentage' },
+          bars: 'horizontal', // Required for Material Bar Charts.
+          axes: {
+            x: {
+              0: { side: 'top', label: 'Percentage'} // Top x-axis.
+            }
+          },
+          bar: { groupWidth: "90%" }
+        };
 
-    var options = {
-      title: 'Modelos Mais Produzidos',
-      legend: { position: 'right', textStyle: {color: '#23243a', fontSize: 13}},
-      backgroundColor: '#fff',
-      chartArea: {width: '80%', height: '80%', backgroundColor: { fill: '#fff' }},
-      colors: ['#ffeba7', '#ffd700', '#e74c3c', '#4f8cff'],
-      width: '100%',
-      height: 250,
-      titleTextStyle: { color: '#23243a', fontSize: 18, bold: true }
-    };
-
-    var chart = new google.visualization.PieChart(document.getElementById('grafico_modelo'));
-    chart.draw(data, options);
-  }
-</script>
+        var chart = new google.visualization.PieChart(document.getElementById('5'));
+        chart.draw(data, options);
+      };
+    </script>
+  </head>
+  <body>
+    <div id="5" style="width: 500px; height: 300px;"></div>
+  </body>
+</html>
