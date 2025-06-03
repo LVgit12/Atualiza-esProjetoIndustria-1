@@ -144,6 +144,13 @@
             transform: translateY(-2px) scale(1.03);
             color: #23243a;
         }
+        .btn-filter-custom a {
+            text-decoration: none !important;
+            color: #23243a !important;
+        }
+        .btn-filter-custom a:hover {
+            text-decoration: none !important;
+        }
         /* Responsividade */
         @media (max-width: 991.98px) {
             .user-info {
@@ -215,9 +222,8 @@
         </div> 
         <nav class="menu-bar">
             <a href="inicial.php">HOME</a>
-            <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">CADASTRAR DADOS</a>
             <a href="desempenho.php">ACOMPANHAR DESEMPENHO</a>
-            <a href="gravar.php">SALVAR DADOS</a>
+            <a href="gravar.php">IMPRIMIR DADOS</a>
         </nav>
         <div class="container-fluid mt-4">
             <form class="row g-2 align-items-end justify-content-start mb-4" method="get">
@@ -235,6 +241,14 @@
                             <path d="M6 10.117V14.5a.5.5 0 0 0 .757.429l2-1.2A.5.5 0 0 0 9 13.5v-3.383l5.447-6.516A1 1 0 0 0 13.882 2H2.118a1 1 0 0 0-.765 1.601L6 10.117z"/>
                         </svg>
                         <span style="font-weight:700; color:#23243a;">Filtrar</span>
+                    </button>
+                </div>
+                <div class="col-auto" style="padding-top: 30px;">
+                    <button type="submit" class="btn btn-filter-custom d-flex align-items-center px-4 py-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#23243a" class="me-2" viewBox="0 0 16 16">
+                        <path d="M14 0a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zM5.904 10.803 10 6.707v2.768a.5.5 0 0 0 1 0V5.5a.5.5 0 0 0-.5-.5H6.525a.5.5 0 1 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 .707.707"/>
+                        </svg>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><span style="font-weight:700; color:#23243a;">Cadastrar Produção</span></a>
                     </button>
                 </div>
             </form>
@@ -314,20 +328,17 @@
                         </div>
                         <div class="modal-body text-start" style="background-color: #28294d; color: #ffeba7;">
                             <form action="cadastro.php" method="post">
-                                <label class="form-label">DATA DO DIA</label>
-                                <input class="form-control" type="date" name="dataDia" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
-                                </br>
                                 <label class="form-label">QUANTIDADE PRODUZIDA</label>
                                 <input class="form-control" type="number" name="QuantProd" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
                                 </br>
-                                <label class="form-label">QUANTIDADE DE REFUGO</label>
-                                <input class="form-control" type="number" name="QuantRefugo" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
+                                <label class="form-label">QUANTIDADE DE RETRABALHO</label>
+                                <input class="form-control" type="number" name="QuantRetrab" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
+                                </br>
+                                <label class="form-label">QUANTIDADE DE PERDAS</label>
+                                <input class="form-control" type="number" name="QuantPerdas" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
                                 </br>
                                 <label class="form-label">QUANTIDADE DE FUNCIONARIOS PRESENTES</label>
                                 <input class="form-control" type="number" name="QuantFuncionarios" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
-                                </br>
-                                <label class="form-label">TEMPO DE PRODUÇÃO (Em minutos)</label>
-                                <input class="form-control" type="time" name="TempoProd" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
                                 </br>
                                 <label class="form-label">MODELO PRODUZIDO</label>
                                 <select class="form-select" arial-label="MODELO PRODUZIDO" name="ModeloProd" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">

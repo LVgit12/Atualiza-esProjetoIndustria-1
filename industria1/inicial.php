@@ -3,8 +3,7 @@
 
 
     session_start();
-    $data = date("d/m/Y");
-    $_SESSION['data'] = $data;
+    $data ="0";
     if(!isset($_SESSION['usuario'])){
         header('Location:index.php');
     }
@@ -12,10 +11,18 @@
         $emails = json_decode(file_get_contents("email.json"), true);
         $senhas = json_decode(file_get_contents("senha.json"), true);
         $nomes = json_decode(file_get_contents("nome.json"), true);
+        $datas = json_decode(file_get_contents("data.json"), true);
+        $QuantProd = json_decode(file_get_contents("Producao.json"), true);
+        $QuantRetrabs = json_decode(file_get_contents("retrabalho.json"), true);
+        $QuantPerdass = json_decode(file_get_contents("perdas.json"), true);
+        $QuantFuncionarioss = json_decode(file_get_contents("funcionarios.json"), true);
         $id = array_search($_SESSION['usuario'], $emails);
         $_SESSION['nomes'] = $nomes;
         $_SESSION['senhas'] = $senhas;
         $_SESSION['emails'] = $emails;
+
+        $data0 = json_encode($data, JSON_PRETTY_PRINT);
+        file_put_contents("data.json", $data0);
     }
     else{
         $emails = $_SESSION['emails'];
@@ -34,13 +41,13 @@
     </head>
     
     <style>
-        body {
-            background: #23243a;
+        body { /* cor de fundo da pagina */
+            background:#23243a;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        .menu-bar {
+        .menu-bar { /* cor do fundo do menu */
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
@@ -48,15 +55,15 @@
             background: #28294d;
             padding: 0;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(40,41,77,0.10);
+            box-shadow: 0 2px 8px rgba(40, 41, 77,0.10);
             margin: 24px 0 32px 0;
             width: 100%;
             gap: 0;
             overflow: hidden;
         }
-        .menu-bar a {
+        .menu-bar a { /* COR DO TEXTO DOS BOTOES DO MENU */
             text-decoration: none;
-            color: #ffeba7;
+            color: #4169E1;
             font-size: 1.1rem;
             font-weight: 500;
             padding: 18px 32px;
@@ -71,21 +78,21 @@
             min-width: 120px;
             box-sizing: border-box;
         }
-        .menu-bar a:hover {
-            background: #ffeba7;
-            color: #23243a;
+        .menu-bar a:hover { /*efeito menu (botoes) */
+            background: #1E90FF; /* cor de fundo ao passar o mouse */
+            color: #23243A; /* cor do texto ao passar o mouse */
         }
-        .user-info {
+        .user-info { /* NOME DO USUÁRIO */
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-end;
             align-items: center;
             margin: 16px 40px 0 0;
-            color: #ffeba7;
+            color: #4169E1;);
             font-size: 1.1rem;
             font-weight: 500;
         }
-        .user-info a {
+        .user-info a { /* BOTAO SAIR */
             color: #4f8cff;
             margin-left: 12px;
             text-decoration: none;
@@ -97,20 +104,20 @@
             border-radius: 6px;
             transition: background 0.2s;
         }
-        .user-info a:hover {
+        .user-info a:hover { /* efeito ao passar o mouse no botao sair */
             background:rgba(0, 0, 0, 0.13);
             text-decoration: none;
         }
-        .card-body {
-            background-color: #ffeba7;
+        .card-body { /* COR DO FUNDO DO CABECALHO */
+            background-color:#4169E1;
             padding: 16px;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(40,41,77,0.10);
+            box-shadow: 0 2px 8px rgba(40, 41,77, 0.10);
         }
-        .card {
+        .card { /* COR DO FUNDO DO CARD (onde o grafico esta)*/
             margin: 16px;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(40,41,77,0.10);
+            box-shadow: 0 2px 8px rgba(40, 41,77, 0.10);
         }
         .grafico-container {
             display: flex;
@@ -204,7 +211,7 @@
                 height: auto;
             }
         }
-        .btn-filter-custom {
+        .btn-filter-custom { /* Botão personalizado para filtro de data */
                 background: linear-gradient(90deg,#ffeba7 60%,#ffd700 100%);
                 color: #23243a;
                 font-weight: 700;
@@ -213,8 +220,9 @@
                 border: none;
                 transition: box-shadow 0.2s, transform 0.2s;
             }
+            /*botao filtro*/
             .btn-filter-custom:hover, .btn-filter-custom:focus {
-                box-shadow: 0 4px 16px rgba(40,41,77,0.18);
+                box-shadow: 0 4px 16px rgb(0, 255, 98);
                 transform: translateY(-2px) scale(1.03);
                 color: #23243a;
             }
@@ -238,37 +246,14 @@
             <a href="desempenho.php">ACOMPANHAR DESEMPENHO</a>
             <a href="gravar.php">IMPRIMIR DADOS</a>
         </nav>
-        <!-- Filtro por data -->
-        <div class="container-fluid mt-3 mb-3 px-4" style="max-width:100%;" >
-            <form class="row g-2 align-items-end justify-content-start" method="get" action="" style="max-width:700px;">
-                <div class="col-auto">
-                    <label for="data_inicial" class="label-custom">Data Inicial</label>
-                    <input type="date" class="form-control" id="data_inicial" name="data_inicial" value="<?php echo isset($_GET['data_inicial']) ? htmlspecialchars($_GET['data_inicial']) : ''; ?>">
-                </div>
-                <div class="col-auto">
-                    <label for="data_final" class="label-custom">Data Final</label>
-                    <input type="date" class="form-control" id="data_final" name="data_final" value="<?php echo isset($_GET['data_final']) ? htmlspecialchars($_GET['data_final']) : ''; ?>">
-                </div>
-                <div class="col-auto" style="padding-top: 28px;">
-                    <button type="submit" class="btn btn-filter-custom d-flex align-items-center px-4 py-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#23243a" class="me-2" viewBox="0 0 16 16">
-                            <path d="M6 10.117V14.5a.5.5 0 0 0 .757.429l2-1.2A.5.5 0 0 0 9 13.5v-3.383l5.447-6.516A1 1 0 0 0 13.882 2H2.118a1 1 0 0 0-.765 1.601L6 10.117z"/>
-                        </svg>
-                        <span style="font-weight:700; color:#23243a;">Filtrar</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-        <br>
-        <br/><br/>
         <div class="row justify-content-center">
             <div class="col-12 col-md-10 col-lg-9">
                 <div class="card mb-4 rounded shadow-sw">
                     <div class="card-header py-3" style="background-color: #23243a">
                         <h3>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ffeba7" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#4169E1" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
                                 <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z"/>
-                            </svg>&nbsp;&nbsp;<b><font color="#ffeba7">RESUMO DO DIA: <?php echo date("d/m/Y") ?></font></b>
+                            </svg>&nbsp;&nbsp;<b><font color="#4169E1">RESUMO DO DIA: <?php echo date("d/m/Y") ?></font></b>
                         </h3>
                     </div>
                     <div class="card-body grafico-container" style="background:#fff; border-radius:8px; min-height:420px;">
