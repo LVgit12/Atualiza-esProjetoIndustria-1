@@ -3,6 +3,7 @@
 
 
     session_start();
+    $_SESSION['datahoje'] = date("d/m/Y");
     $data ="0";
     if(!isset($_SESSION['usuario'])){
         header('Location:index.php');
@@ -107,7 +108,7 @@
             color:#23243a !important;
         }
         .card-header {
-            background-color:#ffeba7 !important;
+            background-color:#23243a !important;
         }
         .card-body {
             padding: 6px;
@@ -117,7 +118,7 @@
         .card {
             margin: 16px;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(40,41,77,0.10);
+            box-shadow: 0 2px 8pxrgb(0, 0, 0);
         }
         .label-custom {
             color: #ffeba7 !important;
@@ -266,26 +267,59 @@
                     </button>
                 </div>
             </form>
+
+            <div class="row g-3 align-items">
+                <div class="cols-12 col-md-3 mb-0">
+                    <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
+
+                    </div>
+                    <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
+                        <?php echo $QuantProd; ?> 
+                    </div>
+                </div>
+                <div class="cols-12 col-md-3 mb-0">
+                    <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
+
+                    </div>
+                    <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
+                        <?php echo $QuantRetrabs; ?>
+                    </div>
+                </div>
+                <div class="cols-12 col-md-3 mb-0">
+                    <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
+
+                    </div>
+                    <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
+                        <?php echo $QuantPerdass; ?>
+                    </div>
+                </div>
+                <div class="cols-12 col-md-3 mb-0">
+                    <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
+
+                    </div>
+                    <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
+                        <?php echo $QuantFuncionarioss; ?>
+                    </div>
+                </div>
+
+            </div>
             
             <!-- Gráficos principais: 1 e 2 lado a lado, cobrindo toda a largura -->
-            <div class="row g-3 align-items-end"><!-- align-items-end para alinhar os cards pela base -->
-                <div class="cols-12 col-md-4 mb-0"><!-- mb-0 remove margem inferior -->
-                    <div class="card" style="height:55vh; min-height:120px; max-height:700px; margin-bottom:0;">
-                        <div class="card-header" style="background-color: #ffeba7;">
+            <div class="row g-3 align-items"><!-- align-items-end para alinhar os cards pela base -->
+                <div class="cols-12 col-md-12 mb-0"><!-- mb-0 remove margem inferior -->
+                    <div class="card" style="height:55vh; min-height:120px; max-height:400px; margin-bottom:0;">
+                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
                             <b>Gráfico 1: Resumo de Datas</b>
                         </div>
                         <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
-                            <?php include "grafico.php"; ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 mb-0">
-                    <div class="card" style="height:55vh; min-height:220px; max-height:700px; margin-bottom:0;">
-                        <div class="card-header" style="background-color: #ffeba7;">
-                            <b>Gráfico 2: Quantidade Produzida</b>
-                        </div>
-                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
-                            <?php include "grafico_produzidas.php"; ?>
+                            <div class="row g-3 align-items">
+                                <div class="cols-12 col-md-6 mb-0">
+                                    <?php include "grafico.php"; ?>
+                                </div>
+                                <div class="cols-12 col-md-6 mb-0">
+                                    <?php include "grafico_produzidas.php"; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -294,17 +328,17 @@
             <div class="row row-cols-1 row-cols-md-3 g-4 mt-0 pt-0"><!-- mt-0 e pt-0 para remover margem/padding superior -->
                 <div class="col">
                     <div class="card h-55">
-                        <div class="card-header" style="background-color: #ffeba7;">
-                            <b>Gráfico 3: Quantidade de Refugo</b>
+                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7">
+                            <font color=""><b>Gráfico 3: Quantidade de Refugo</b></font>
                         </div>
-                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
+                        <div class="card-body" style="background:#fff; border-radius: 8px; overflow-x:auto;">
                             <?php include "grafico_retrabalho.php"; ?>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card h-55">
-                        <div class="card-header" style="background-color: #ffeba7;">
+                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7; ">
                             <b>Gráfico 4: Funcionarios Presentes</b>
                         </div>
                         <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
@@ -314,7 +348,7 @@
                 </div>
                 <div class="col">
                     <div class="card h-55">
-                        <div class="card-header" style="background-color: #ffeba7;">
+                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7; ">
                             <b>Gráfico 5: Modelos Mais Produzidos</b>
                         </div>
                         <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
@@ -324,7 +358,7 @@
                 </div>
                 <div class="col">
                     <div class="card h-55">
-                        <div class="card-header" style="background-color: #ffeba7;">
+                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
                             <b>Gráfico 6: Produção por Dia</b>
                         </div>
                         <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">

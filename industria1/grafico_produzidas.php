@@ -36,6 +36,6 @@
     </script>
   </head>
   <body>
-    <div id="2" style="width: 500px; height: 400px;"></div>
+    <div id="2" style="width: 400px; height: 300px;"></div>
   </body>
 </html>

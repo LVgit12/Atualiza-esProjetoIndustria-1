@@ -1,4 +1,4 @@
-<div id="columnchart_material" style="width: 100%; min-width:900px; max-width:900px; height: 500px; margin:auto;"></div>
+<div id="columnchart_material" style="width: 100%; min-width:200px; max-width:700px; height: 300px; margin:auto;"></div>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
   google.charts.load('current', {'packages':['corechart']});
@@ -17,7 +17,7 @@
       title: 'Gráfico de Acompanhamento',
       subtitle: 'Fabricados, Retrabalho, Perda: 2014-2017',
       legend: { position: 'top', textStyle: {color: '#000000', fontSize: 13}},
-      chartArea: {width: '30%', height: '50%'},
+      chartArea: {width: '80%', height: '60%'},
       colors: ['#23243a', '#ffd700', '#e74c3c'],
       backgroundColor: '#fff',
       hAxis: {
