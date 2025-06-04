@@ -349,7 +349,7 @@
                                     <option value="Modelo D">Modelo D</option>
                                 </select>
                                 </br>
-                                <input type="submit" class="btn btn-success" value="GERAR GRÁFICO">
+                                <input type="submit" class="btn btn-success" value="CADASTRAR">
                                 <input type="button" class="btn btn-outline-danger" value="FECHAR" data-bs-dismiss="modal">
                             </form>
                         </div>

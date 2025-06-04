@@ -17,7 +17,7 @@
       title: 'Gráfico de Acompanhamento',
       subtitle: 'Fabricados, Retrabalho, Perda: 2014-2017',
       legend: { position: 'top', textStyle: {color: '#000000', fontSize: 13}},
-      chartArea: {width: '70%', height: '70%'},
+      chartArea: {width: '30%', height: '50%'},
       colors: ['#23243a', '#ffd700', '#e74c3c'],
       backgroundColor: '#fff',
       hAxis: {

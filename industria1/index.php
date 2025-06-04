@@ -1,9 +1,3 @@
-<?php
-    session_start();
-    $data = date("d/m/Y");
-    $_SESSION['data'] = $data;
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -42,7 +36,7 @@
             --bg-field: #1f2029;
             position: absolute;
             left: 50%;
-            top: 20%;
+            top: 40%;
             -moz-transform: translate(-50%, -50%);
             -webkit-transform: translate(-50%, -50%);
             -ms-transform: translate(-50%, -50%);
@@ -145,6 +139,9 @@
 
     </style>
     <body>
+        <div class="card-body" style="background-color: #ffeba7">    
+            <center><h2><b>CONTROLE DE PRODUÇÃO</b></h2></center>
+        </div>
         <div class="row justify-content-center row-cols-1 row-cols-md-3 text-center align-items-center">
             <div class="cols">
                     <div class="card">
