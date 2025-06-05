@@ -3,7 +3,7 @@
 
 
     session_start();
-    $_SESSION['datahoje'] = date("d/m/Y");
+    $data = date("d/m/Y");
     $data ="0";
     if(!isset($_SESSION['usuario'])){
         header('Location:index.php');
@@ -18,12 +18,14 @@
         $QuantPerdass = json_decode(file_get_contents("perdas.json"), true);
         $QuantFuncionarioss = json_decode(file_get_contents("funcionarios.json"), true);
         $id = array_search($_SESSION['usuario'], $emails);
+        array_push($datas, $data);
         $_SESSION['nomes'] = $nomes;
         $_SESSION['senhas'] = $senhas;
         $_SESSION['emails'] = $emails;
 
         $data0 = json_encode($data, JSON_PRETTY_PRINT);
         file_put_contents("data.json", $data0);
+
     }
     else{
         $emails = $_SESSION['emails'];
@@ -274,7 +276,7 @@
 
                     </div>
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
-                        <?php echo $QuantProd; ?> 
+                        <?php print_r($_SESSION['producao']); ?> 
                     </div>
                 </div>
                 <div class="cols-12 col-md-3 mb-0">
@@ -301,8 +303,8 @@
                         <?php echo $QuantFuncionarioss; ?>
                     </div>
                 </div>
-
             </div>
+            <br/><br/>
             
             <!-- Gráficos principais: 1 e 2 lado a lado, cobrindo toda a largura -->
             <div class="row g-3 align-items"><!-- align-items-end para alinhar os cards pela base -->
@@ -387,6 +389,9 @@
                                 </br>
                                 <label class="form-label">QUANTIDADE DE FUNCIONARIOS PRESENTES</label>
                                 <input class="form-control" type="number" name="QuantFuncionarios" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
+                                </br>
+                                <label class="form-label">TEMPO DE PRODUÇÃO</label>
+                                <input class="form-control" type="time" name="time" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
                                 </br>
                                 <label class="form-label">MODELO PRODUZIDO</label>
                                 <select class="form-select" arial-label="MODELO PRODUZIDO" name="ModeloProd" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">

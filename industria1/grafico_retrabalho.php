@@ -19,7 +19,7 @@
             title: 'Company Performance',
             subtitle: 'Sales, Expenses, and Profit: 2014-2017',
           },
-          bars: 'horizontal' // Required for Material Bar Charts.
+          bars: 'horizontal' 
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('3'));
