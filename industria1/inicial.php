@@ -3,28 +3,25 @@
 
 
     session_start();
-    $data = date("d/m/Y");
-    $data ="0";
+    $datas[] = json_decode(file_get_contents("data.json"), true);
+    $date = date("d/m/Y");
+    $index = array_search($date, $datas);
+    $_SESSION['index'] = $index;
+    if(count($datas) == 0) {
+        $data ="0";
+        $data0 = json_encode($data, JSON_PRETTY_PRINT);
+        file_put_contents("data.json", $data0);
+    }
+    echo count($datas);
     if(!isset($_SESSION['usuario'])){
         header('Location:index.php');
     }
     if(!isset($_SESSION['nomes'])){
-        $emails = json_decode(file_get_contents("email.json"), true);
-        $senhas = json_decode(file_get_contents("senha.json"), true);
-        $nomes = json_decode(file_get_contents("nome.json"), true);
-        $datas = json_decode(file_get_contents("data.json"), true);
-        $QuantProd = json_decode(file_get_contents("Producao.json"), true);
-        $QuantRetrabs = json_decode(file_get_contents("retrabalho.json"), true);
-        $QuantPerdass = json_decode(file_get_contents("perdas.json"), true);
-        $QuantFuncionarioss = json_decode(file_get_contents("funcionarios.json"), true);
         $id = array_search($_SESSION['usuario'], $emails);
         array_push($datas, $data);
-        $_SESSION['nomes'] = $nomes;
+        $_SESSION['nomes'] =     $nomes;
         $_SESSION['senhas'] = $senhas;
         $_SESSION['emails'] = $emails;
-
-        $data0 = json_encode($data, JSON_PRETTY_PRINT);
-        file_put_contents("data.json", $data0);
 
     }
     else{
@@ -113,14 +110,14 @@
             background-color:#23243a !important;
         }
         .card-body {
-            padding: 6px;
+            padding: 0px;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(40,41,77,0.10);
         }
         .card {
             margin: 16px;
             border-radius: 8px;
-            box-shadow: 0 2px 8pxrgb(0, 0, 0);
+            box-shadow: 0 2px 8px rgb(0, 0, 0);
         }
         .label-custom {
             color: #ffeba7 !important;
@@ -273,34 +270,74 @@
             <div class="row g-3 align-items">
                 <div class="cols-12 col-md-3 mb-0">
                     <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-
+                        Quantidade produzida no dia:
                     </div>
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
-                        <?php print_r($_SESSION['producao']); ?> 
+                        <center><h3></br>
+                            <?php 
+                                $prod = json_decode(file_get_contents("Producao.json"), true);
+                                if($index <= 0){
+                                    echo $prod[$index];
+                                }
+                                else{
+                                    echo "Ainda não há dados cadastrados no dia de hoje!";
+                                }   
+                            ?>
+                        </h3></center>
                     </div>
                 </div>
                 <div class="cols-12 col-md-3 mb-0">
                     <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-
+                        Quantidade de perdas no dia: 
                     </div>
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
-                        <?php echo $QuantRetrabs; ?>
+                        <center><h3></br>
+                            <?php 
+                                $perda =  json_decode(file_get_contents("perdas.json"), true);
+                                if($index <= 0){
+                                    echo $perda[$index];
+                                }
+                                else{
+                                    echo "Ainda não há dados cadastrados no dia de hoje!";
+                                } 
+                            ?>
+                        </h3></center>
                     </div>
                 </div>
                 <div class="cols-12 col-md-3 mb-0">
                     <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-
+                        Taxa de Produção em relação a meta (200 unidades):
                     </div>
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
-                        <?php echo $QuantPerdass; ?>
+                        <center><h3></br>
+                            <?php 
+                                $tp = json_decode(file_get_contents("TxProd.json"), true); 
+                                if($index <= 0){
+                                    echo $tp[$index]."%";
+                                }
+                                else{
+                                    echo "Ainda não há dados cadastrados no dia de hoje!";
+                                }
+                            ?>
+                        </h3></center>
                     </div>
                 </div>
                 <div class="cols-12 col-md-3 mb-0">
                     <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-
+                        Taxa de Refugo em relação ao total produzido:
                     </div>
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
-                        <?php echo $QuantFuncionarioss; ?>
+                        <center><h3></br> 
+                            <?php 
+                                $tr = json_decode(file_get_contents("Txrefugo.json"), true);
+                                if($index <= 0){
+                                    echo $tr[$index]."%";
+                                }
+                                else{
+                                    echo "Ainda não há dados cadastrados no dia de hoje!";
+                                }
+                            ?>
+                        </h3></center>
                     </div>
                 </div>
             </div>
@@ -391,7 +428,7 @@
                                 <input class="form-control" type="number" name="QuantFuncionarios" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
                                 </br>
                                 <label class="form-label">TEMPO DE PRODUÇÃO</label>
-                                <input class="form-control" type="time" name="time" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
+                                <input class="form-control" type="text" name="time" id="tempoProducao" required maxlength="5" placeholder="--:--" style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
                                 </br>
                                 <label class="form-label">MODELO PRODUZIDO</label>
                                 <select class="form-select" arial-label="MODELO PRODUZIDO" name="ModeloProd" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
@@ -412,5 +449,21 @@
             </div>   
             </div>
         </div>
+        <!-- Adiciona máscara para o campo tempo de produção -->
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var tempoInput = document.getElementById('tempoProducao');
+            if (tempoInput) {
+                tempoInput.addEventListener('input', function(e) {
+                    let value = this.value.replace(/\D/g, '');
+                    if (value.length > 4) value = value.slice(0, 4);
+                    if (value.length > 2) {
+                        value = value.slice(0,2) + ':' + value.slice(2);
+                    }
+                    this.value = value;
+                });
+            }
+        });
+        </script>
     </body>
 </html>
