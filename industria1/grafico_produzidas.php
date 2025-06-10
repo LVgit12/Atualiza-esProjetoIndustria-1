@@ -17,7 +17,7 @@
 
         var options = {
           title: 'Chess opening moves',
-          width: 900,
+          width: 400,
           legend: { position: 'none' },
           chart: { title: 'Chess opening moves',
                    subtitle: 'popularity by percentage' },
@@ -27,7 +27,7 @@
               0: { side: 'top', label: 'Percentage'} // Top x-axis.
             }
           },
-          bar: { groupWidth: "90%" }
+          bar: { groupWidth: "70%" }
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('2'));

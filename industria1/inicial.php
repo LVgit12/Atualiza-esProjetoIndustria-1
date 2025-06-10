@@ -12,11 +12,17 @@
         $data0 = json_encode($data, JSON_PRETTY_PRINT);
         file_put_contents("data.json", $data0);
     }
-    echo count($datas);
     if(!isset($_SESSION['usuario'])){
         header('Location:index.php');
     }
     if(!isset($_SESSION['nomes'])){
+        $emails[] = json_decode(file_get_contents("email.json"), true);
+        $senhas[] = json_decode(file_get_contents("senha.json"), true);
+        $nomes[] = json_decode(file_get_contents("nome.json"), true);
+        $QuantProd[] = json_decode(file_get_contents("Producao.json"), true);
+        $QuantRetrabs[] = json_decode(file_get_contents("retrabalho.json"), true);
+        $QuantPerdass[] = json_decode(file_get_contents("perdas.json"), true);
+        $QuantFuncionarioss[] = json_decode(file_get_contents("funcionarios.json"), true);
         $id = array_search($_SESSION['usuario'], $emails);
         array_push($datas, $data);
         $_SESSION['nomes'] =     $nomes;
@@ -179,7 +185,7 @@
             }
             .menu-bar {
                 flex-direction: column;
-                border-radius: 10px;
+                border-radius: 0px;
             }
             .menu-bar a {
                 width: 100%;
@@ -224,7 +230,7 @@
                 <nav class="menu-bar" style="width: 100%;">
                     <div class="menu-links" style="display: flex; flex: 1; justify-content: center;">
                         <a href="inicial.php">VISÃO GERAL</a>
-                        <a href="desempenho.php">ACOMPANHAR DESEMPENHO</a>
+                        <a href="desempenho.php">RELATÓRIO</a>
                         <a href="gravar.php">IMPRIMIR DADOS</a>
                     </div>
                     <div class="user-info">
@@ -240,37 +246,37 @@
         </div> 
         
         <div class="container-fluid mt-4">
-            <form class="row g-2 align-items-end justify-content-start mb-4" method="get">
+            <form class="row g-2 align-items-end justify-content-start mb-4" method="get" action="filtrar.php">
                 <div class="col-auto">
                     <label for="data_inicial" class="label-custom">Data Inicial</label>
-                    <input type="date" class="form-control" id="data_inicial" name="data_inicial" style="color:#ffeba7;" value="<?php echo isset($_GET['data_inicial']) ? htmlspecialchars($_GET['data_inicial']) : ''; ?>">
+                    <input type="date" class="form-control" name="data_inicial" style="color:#ffeba7;" value="<?php echo isset($_GET['data_inicial']) ? htmlspecialchars($_GET['data_inicial']) : ''; ?>">
                 </div>
                 <div class="col-auto">
                     <label for="data_final" class="label-custom">Data Final</label>
-                    <input type="date" class="form-control" id="data_final" name="data_final" style="color:#ffeba7;" value="<?php echo isset($_GET['data_final']) ? htmlspecialchars($_GET['data_final']) : ''; ?>">
+                    <input type="date" class="form-control" name="data_final" style="color:#ffeba7;" value="<?php echo isset($_GET['data_final']) ? htmlspecialchars($_GET['data_final']) : ''; ?>">
                 </div>
                 <div class="col-auto" style="padding-top: 28px;">
-                    <button type="submit" class="btn btn-filter-custom d-flex align-items-center px-4 py-2">
+                    <button type="submit"  class="btn btn-filter-custom d-flex align-items-center px-4 py-2" style="font-weight:700; color:#23243a;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#23243a" class="me-2" viewBox="0 0 16 16">
                             <path d="M6 10.117V14.5a.5.5 0 0 0 .757.429l2-1.2A.5.5 0 0 0 9 13.5v-3.383l5.447-6.516A1 1 0 0 0 13.882 2H2.118a1 1 0 0 0-.765 1.601L6 10.117z"/>
                         </svg>
-                        <span style="font-weight:700; color:#23243a;">Filtrar</span>
+                        Filtrar
                     </button>
-                </div>
+                </div>  
                 <div class="col-auto" style="padding-top: 30px;">
-                    <button type="submit" class="btn btn-filter-custom d-flex align-items-center px-4 py-2">
+                    <button type="button" class="btn btn-filter-custom d-flex align-items-center px-4 py-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#23243a" class="me-2" viewBox="0 0 16 16">
                         <path d="M14 0a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zM5.904 10.803 10 6.707v2.768a.5.5 0 0 0 1 0V5.5a.5.5 0 0 0-.5-.5H6.525a.5.5 0 1 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 .707.707"/>
                         </svg>
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><span style="font-weight:700; color:#23243a;">Cadastrar Produção</span></a>
+                        <span style="font-weight:700; color:#23243a;">Cadastrar Produção</span>
                     </button>
                 </div>
             </form>
 
             <div class="row g-3 align-items">
-                <div class="cols-12 col-md-3 mb-0">
+                <div class="cols-12 col-md-2 mb-0">
                     <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-                        Quantidade produzida no dia:
+                        Quantidade produzida:
                     </div>
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br>
@@ -286,9 +292,9 @@
                         </h3></center>
                     </div>
                 </div>
-                <div class="cols-12 col-md-3 mb-0">
+                <div class="cols-12 col-md-2 mb-0">
                     <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-                        Quantidade de perdas no dia: 
+                        Quantidade de perdas: 
                     </div>
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br>
@@ -304,9 +310,9 @@
                         </h3></center>
                     </div>
                 </div>
-                <div class="cols-12 col-md-3 mb-0">
+                <div class="cols-12 col-md-2 mb-0">
                     <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-                        Taxa de Produção em relação a meta (200 unidades):
+                        Taxa de Produção:
                     </div>
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br>
@@ -322,9 +328,9 @@
                         </h3></center>
                     </div>
                 </div>
-                <div class="cols-12 col-md-3 mb-0">
+                <div class="cols-12 col-md-2 mb-0">
                     <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-                        Taxa de Refugo em relação ao total produzido:
+                        Taxa de Refugo:
                     </div>
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br> 
@@ -340,6 +346,42 @@
                         </h3></center>
                     </div>
                 </div>
+                <div class="cols-12 col-md-2 mb-0">
+                    <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
+                        Quantidade de funcionários:
+                    </div>
+                    <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
+                        <center><h3></br> 
+                            <?php 
+                                $tr = json_decode(file_get_contents("funcionarios.json"), true);
+                                if($index <= 0){
+                                    echo $tr[$index];
+                                }
+                                else{
+                                    echo "Ainda não há dados cadastrados no dia de hoje!";
+                                }
+                            ?>
+                        </h3></center>
+                    </div>
+                </div>
+                <div class="cols-12 col-md-2 mb-0">
+                    <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
+                        Quantidade de retrabalho:
+                    </div>
+                    <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
+                        <center><h3></br> 
+                            <?php 
+                                $tr = json_decode(file_get_contents("retrabalho.json"), true);
+                                if($index <= 0){
+                                    echo $tr[$index];
+                                }
+                                else{
+                                    echo "Ainda não há dados cadastrados no dia de hoje!";
+                                }
+                            ?>
+                        </h3></center>
+                    </div>
+                </div>
             </div>
             <br/><br/>
             
@@ -347,61 +389,33 @@
             <div class="row g-3 align-items"><!-- align-items-end para alinhar os cards pela base -->
                 <div class="cols-12 col-md-12 mb-0"><!-- mb-0 remove margem inferior -->
                     <div class="card" style="height:55vh; min-height:120px; max-height:400px; margin-bottom:0;">
-                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-                            <b>Gráfico 1: Resumo de Datas</b>
-                        </div>
                         <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                             <div class="row g-3 align-items">
-                                <div class="cols-12 col-md-6 mb-0">
-                                    <?php include "grafico.php"; ?>
+                                <div class="cols-12 col-md-4 mb-0">
+                                    <div class="card">
+                                        <div class="card-details">
+                                            <p class="text-title">Resumo de Produção do Dia: <?php echo $date; ?></p>
+                                            <p class="text-body"><?php include "grafico.php"; ?></p>
+                                        </div>
+                                    </div>    
                                 </div>
-                                <div class="cols-12 col-md-6 mb-0">
-                                    <?php include "grafico_produzidas.php"; ?>
+                                <div class="cols-12 col-md-4 mb-0">
+                                    <div class="card">
+                                        <div class="card-details">
+                                            <p class="text-title">Resumo de Produção do Dia: <?php echo $date; ?></p>
+                                            <p class="text-body"><?php include "grafico_produzidas.php"; ?></p>
+                                        </div>
+                                    </div>    
+                                </div>
+                                <div class="cols-12 col-md-4 mb-0">
+                                    <div class="card">
+                                        <div class="card-details">
+                                            <p class="text-title">Resumo de Produção do Dia: <?php echo $date; ?></p>
+                                            <p class="text-body"><?php include "grafico_dias.php"; ?></p>
+                                        </div>
+                                    </div>    
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Demais gráficos em linhas de até 3 -->
-            <div class="row row-cols-1 row-cols-md-3 g-4 mt-0 pt-0"><!-- mt-0 e pt-0 para remover margem/padding superior -->
-                <div class="col">
-                    <div class="card h-55">
-                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7">
-                            <font color=""><b>Gráfico 3: Quantidade de Refugo</b></font>
-                        </div>
-                        <div class="card-body" style="background:#fff; border-radius: 8px; overflow-x:auto;">
-                            <?php include "grafico_retrabalho.php"; ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-55">
-                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7; ">
-                            <b>Gráfico 4: Funcionarios Presentes</b>
-                        </div>
-                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
-                            <?php include "grafico_funcionarios.php"; ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-55">
-                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7; ">
-                            <b>Gráfico 5: Modelos Mais Produzidos</b>
-                        </div>
-                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
-                            <?php include "grafico_modelo.php"; ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-55">
-                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-                            <b>Gráfico 6: Produção por Dia</b>
-                        </div>
-                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
-                            <?php include "grafico_dias.php"; ?>
                         </div>
                     </div>
                 </div>

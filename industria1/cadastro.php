@@ -1,6 +1,6 @@
 <?php
     session_start();
-    $data = date('d/m/Y');
+    $data = date('Y-d-m');
     $datas = json_decode(file_get_contents("data.json"), true);
     if (!is_array($datas)) $datas = [];
     if (in_array($data, $datas)) {
@@ -18,6 +18,7 @@
             $QuantPerdass = $_POST['QuantPerdas'];
             $QuantFuncionarioss = $_POST['QuantFuncionarios'];
             $ModeloProds = $_POST['ModeloProd'];
+            
 
             // Corrigir leitura e atualização dos arrays dos arquivos JSON
             $QuantProd = json_decode(file_get_contents("Producao.json"), true);
