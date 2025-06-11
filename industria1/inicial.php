@@ -281,12 +281,25 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br>
                             <?php 
-                                $prod = json_decode(file_get_contents("Producao.json"), true);
-                                if($index <= 0){
-                                    echo $prod[$index];
+                                if($_SESSION['filtro'] == false){
+                                    $prod = json_decode(file_get_contents("Producao.json"), true);
+                                    if($index <= 0){
+                                        echo $prod[$index];
+                                    }
+                                    else{
+                                        echo "Ainda não há dados cadastrados no dia de hoje!";
+                                    }
                                 }
                                 else{
-                                    echo "Ainda não há dados cadastrados no dia de hoje!";
+                                    $Producao1 = json_decode(file_get_contents("ProdFiltro.json"), true);
+                                    if (!is_array($Producao1)) $Producao1 = [];
+                                    $total = 0;
+
+                                    foreach($Producao1 as $item1){
+                                        $total += intval($item1);
+                                    }
+                                    echo $total;
+                                
                                 }   
                             ?>
                         </h3></center>
@@ -299,12 +312,24 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br>
                             <?php 
-                                $perda =  json_decode(file_get_contents("perdas.json"), true);
-                                if($index <= 0){
-                                    echo $perda[$index];
+                                if($_SESSION['filtro'] == false){
+                                    $perda = json_decode(file_get_contents("perdas.json"), true);
+                                    if($index <= 0){
+                                        echo $perda[$index];
+                                    }
+                                    else{
+                                        echo "Ainda não há dados cadastrados no dia de hoje!";
+                                    }
                                 }
                                 else{
-                                    echo "Ainda não há dados cadastrados no dia de hoje!";
+                                    $Perda1 = json_decode(file_get_contents("PerdaFiltro.json"), true);
+                                    if (!is_array($Perda1)) $Perda1 = [];
+                                    $totalperdas = 0;
+
+                                    foreach($Perda1 as $item2){
+                                        $totalperdas += intval($item2);
+                                    }
+                                    echo $totalperdas;
                                 } 
                             ?>
                         </h3></center>
@@ -317,12 +342,27 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br>
                             <?php 
-                                $tp = json_decode(file_get_contents("TxProd.json"), true); 
-                                if($index <= 0){
-                                    echo $tp[$index]."%";
+                                if($_SESSION['filtro'] == false){
+                                    $Taxaprod = json_decode(file_get_contents("TxProd.json"), true);
+                                    if($index <= 0){
+                                        echo $Taxaprod[$index];
+                                    }
+                                    else{
+                                        echo "Ainda não há dados cadastrados no dia de hoje!";
+                                    }
                                 }
                                 else{
-                                    echo "Ainda não há dados cadastrados no dia de hoje!";
+                                    $Producao1 = json_decode(file_get_contents("ProdFiltro.json"), true);
+                                    if (!is_array($Producao1)) $Producao1 = [];
+                                    $total = 0;
+
+                                    foreach($Producao1 as $item3){
+                                        $total += intval($item3);
+                                    }
+                                    $quantia = count($Producao1);
+                                    $Taxaprod = ($total / (200 * $quantia)) * 100;
+                                    $_SESSION['Taxaprod'] = $Taxaprod;
+                                    echo $Taxaprod."%";
                                 }
                             ?>
                         </h3></center>
@@ -335,13 +375,36 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br> 
                             <?php 
-                                $tr = json_decode(file_get_contents("Txrefugo.json"), true);
-                                if($index <= 0){
-                                    echo $tr[$index]."%";
+                                if($_SESSION['filtro'] == false){
+                                    $tr = json_decode(file_get_contents("Txrefugo.json"), true);
+                                    if($index <= 0){
+                                        echo $tr[$index]."%";
+                                    }
+                                    else{
+                                        echo "Ainda não há dados cadastrados no dia de hoje!";
+                                    }
                                 }
                                 else{
-                                    echo "Ainda não há dados cadastrados no dia de hoje!";
-                                }
+                                    $Producao1 = json_decode(file_get_contents("ProdFiltro.json"), true);
+                                    if (!is_array($Producao1)) $Producao1 = [];
+                                    $total = 0;
+
+                                    foreach($Producao1 as $item1){
+                                        $total += intval($item1);
+                                    }
+
+                                    $Perda1 = json_decode(file_get_contents("PerdaFiltro.json"), true);
+                                    if (!is_array($Perda1)) $Perda1 = [];
+                                    $totalperdas = 0;
+
+                                    foreach($Perda1 as $item4){
+                                        $totalperdas += intval($item4);
+                                    }
+                                    
+                                    $Taxarefugo = ($totalperdas / $total) * 100;
+                                    $_SESSION['TaxaRefugo'] = $Taxarefugo;
+                                    echo $Taxarefugo."%";
+                                } 
                             ?>
                         </h3></center>
                     </div>
@@ -371,12 +434,24 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br> 
                             <?php 
-                                $tr = json_decode(file_get_contents("retrabalho.json"), true);
-                                if($index <= 0){
-                                    echo $tr[$index];
+                                if($_SESSION['filtro'] == false){
+                                    $Retrabalho = json_decode(file_get_contents("retrabalho.json"), true);
+                                    if($index <= 0){
+                                        echo $Retrabalho[$index];
+                                    }
+                                    else{
+                                        echo "Ainda não há dados cadastrados no dia de hoje!";
+                                    }
                                 }
                                 else{
-                                    echo "Ainda não há dados cadastrados no dia de hoje!";
+                                    $Retrabalho1 = json_decode(file_get_contents("RetrabFiltro.json"), true);
+                                    if (!is_array($Retrabalho1)) $Retrabalho1 = [];
+                                    $totalRetrab = 0;
+
+                                    foreach($Retrabalho1 as $item5){
+                                        $totalRetrab += intval($item5);
+                                    }
+                                    echo $totalRetrab;
                                 }
                             ?>
                         </h3></center>
@@ -457,7 +532,7 @@
                                 <input type="button" class="btn btn-outline-danger" value="FECHAR" data-bs-dismiss="modal">
                             </form>
                         </div>
-                        
+                        <?php $_SESSION['filtro'] = false; ?>
                     </div>
                 </div>
             </div>   

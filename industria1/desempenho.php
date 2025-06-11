@@ -3,7 +3,8 @@
 
 
     session_start();
-    $datas[] = json_decode(file_get_contents("data.json"), true);
+    $datas = json_decode(file_get_contents("data.json"), true);
+    if (!is_array($datas)) $datas = [];
     $date = date("d/m/Y");
     $index = array_search($date, $datas);
     $_SESSION['index'] = $index;
@@ -15,26 +16,26 @@
     if(!isset($_SESSION['usuario'])){
         header('Location:index.php');
     }
-    if(!isset($_SESSION['nomes'])){
-        $emails[] = json_decode(file_get_contents("email.json"), true);
-        $senhas[] = json_decode(file_get_contents("senha.json"), true);
-        $nomes[] = json_decode(file_get_contents("nome.json"), true);
-        $QuantProd[] = json_decode(file_get_contents("Producao.json"), true);
-        $QuantRetrabs[] = json_decode(file_get_contents("retrabalho.json"), true);
-        $QuantPerdass[] = json_decode(file_get_contents("perdas.json"), true);
-        $QuantFuncionarioss[] = json_decode(file_get_contents("funcionarios.json"), true);
-        $id = array_search($_SESSION['usuario'], $emails);
-        array_push($datas, $data);
-        $_SESSION['nomes'] =     $nomes;
-        $_SESSION['senhas'] = $senhas;
-        $_SESSION['emails'] = $emails;
+    $emails = json_decode(file_get_contents("email.json"), true);
+    $senhas = json_decode(file_get_contents("senha.json"), true);
+    $nomes = json_decode(file_get_contents("nome.json"), true);
+    $QuantProd = json_decode(file_get_contents("Producao.json"), true);
+    $QuantRetrabs = json_decode(file_get_contents("retrabalho.json"), true);
+    $QuantPerdass = json_decode(file_get_contents("perdas.json"), true);
+    $QuantFuncionarioss = json_decode(file_get_contents("funcionarios.json"), true);
+    $Modelos = json_decode(file_get_contents("ModeloProd.json"), true);
+    $tempo = json_decode(file_get_contents("tempoProd.json"), true);
+    if (!is_array($QuantProd)) $QuantProd = [];
+    if (!is_array($QuantRetrabs)) $QuantRetrabs = [];
+    if (!is_array($QuantPerdass)) $QuantPerdass = [];
+    if (!is_array($QuantFuncionarioss)) $QuantFuncionarioss = [];
+    if (!is_array($Modelos)) $Modelos = [];
+    if (!is_array($tempo)) $tempo = [];
+    $id = array_search($_SESSION['usuario'], $emails);
+    $_SESSION['nomes'] = $nomes;
+    $_SESSION['senhas'] = $senhas;
+    $_SESSION['emails'] = $emails;
 
-    }
-    else{
-        $emails = $_SESSION['emails'];
-        $id = array_search($_SESSION['usuario'], $emails);
-        $nomes = $_SESSION['nomes'];
-    }
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -226,11 +227,11 @@
         
         <div class="card-body" style="background-color: #ffeba7">    
             <div style="display: flex; flex-direction: column; align-items: center;">
-                <h2><b>VISÃO GERAL</b></h2>
+                <h2><b>RELATÓRIO</b></h2>
                 <nav class="menu-bar" style="width: 100%;">
                     <div class="menu-links" style="display: flex; flex: 1; justify-content: center;">
                         <a href="inicial.php">VISÃO GERAL</a>
-                        <a href="desempenho.php">ACOMPANHAR DESEMPENHO</a>
+                        <a href="desempenho.php">RELATÓRIO</a>
                         <a href="gravar.php">IMPRIMIR DADOS</a>
                     </div>
                     <div class="user-info">
@@ -272,204 +273,94 @@
                     </button>
                 </div>
             </form>
-
-            <div class="row g-3 align-items">
-                <div class="cols-12 col-md-3 mb-0">
-                    <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-                        Quantidade produzida no dia:
-                    </div>
-                    <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
-                        <center><h3></br>
-                            <?php 
-                                $prod = json_decode(file_get_contents("Producao.json"), true);
-                                if($index <= 0){
-                                    echo $prod[$index];
-                                }
-                                else{
-                                    echo "Ainda não há dados cadastrados no dia de hoje!";
-                                }   
-                            ?>
-                        </h3></center>
-                    </div>
-                </div>
-                <div class="cols-12 col-md-3 mb-0">
-                    <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-                        Quantidade de perdas no dia: 
-                    </div>
-                    <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
-                        <center><h3></br>
-                            <?php 
-                                $perda =  json_decode(file_get_contents("perdas.json"), true);
-                                if($index <= 0){
-                                    echo $perda[$index];
-                                }
-                                else{
-                                    echo "Ainda não há dados cadastrados no dia de hoje!";
-                                } 
-                            ?>
-                        </h3></center>
-                    </div>
-                </div>
-                <div class="cols-12 col-md-3 mb-0">
-                    <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-                        Taxa de Produção em relação a meta (200 unidades):
-                    </div>
-                    <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
-                        <center><h3></br>
-                            <?php 
-                                $tp = json_decode(file_get_contents("TxProd.json"), true); 
-                                if($index <= 0){
-                                    echo $tp[$index]."%";
-                                }
-                                else{
-                                    echo "Ainda não há dados cadastrados no dia de hoje!";
-                                }
-                            ?>
-                        </h3></center>
-                    </div>
-                </div>
-                <div class="cols-12 col-md-3 mb-0">
-                    <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-                        Taxa de Refugo em relação ao total produzido:
-                    </div>
-                    <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
-                        <center><h3></br> 
-                            <?php 
-                                $tr = json_decode(file_get_contents("Txrefugo.json"), true);
-                                if($index <= 0){
-                                    echo $tr[$index]."%";
-                                }
-                                else{
-                                    echo "Ainda não há dados cadastrados no dia de hoje!";
-                                }
-                            ?>
-                        </h3></center>
-                    </div>
-                </div>
-            </div>
-            <br/><br/>
-            
-            <!-- Gráficos principais: 1 e 2 lado a lado, cobrindo toda a largura -->
-            <div class="row g-3 align-items"><!-- align-items-end para alinhar os cards pela base -->
-                <div class="cols-12 col-md-12 mb-0"><!-- mb-0 remove margem inferior -->
-                    <div class="card" style="height:55vh; min-height:120px; max-height:400px; margin-bottom:0;">
-                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
-                            <div class="row g-3 align-items">
-                                <div class="cols-12 col-md-4 mb-0">
-                                    <div class="card">
-                                        <div class="card-details">
-                                            <p class="text-title">Resumo de Produção do Dia: <?php echo $date; ?></p>
-                                            <p class="text-body"><?php include "grafico.php"; ?></p>
-                                        </div>
-                                    </div>    
-                                </div>
-                                <div class="cols-12 col-md-4 mb-0">
-                                    <div class="card">
-                                        <div class="card-details">
-                                            <p class="text-title">Resumo de Produção do Dia: <?php echo $date; ?></p>
-                                            <p class="text-body"><?php include "grafico_produzidas.php"; ?></p>
-                                        </div>
-                                    </div>    
-                                </div>
-                                <div class="cols-12 col-md-4 mb-0">
-                                    <div class="card">
-                                        <div class="card-details">
-                                            <p class="text-title">Resumo de Produção do Dia: <?php echo $date; ?></p>
-                                            <p class="text-body"><?php include "grafico_dias.php"; ?></p>
-                                        </div>
-                                    </div>    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Demais gráficos em linhas de até 3 -->
-            <div class="row row-cols-1 row-cols-md-3 g-4 mt-0 pt-0"><!-- mt-0 e pt-0 para remover margem/padding superior -->
-                <div class="col">
-                    <div class="card h-55">
-                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7">
-                            <font color=""><b>Gráfico 3: Quantidade de Refugo</b></font>
-                        </div>
-                        <div class="card-body" style="background:#fff; border-radius: 8px; overflow-x:auto;">
-                            <?php include "grafico_retrabalho.php"; ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-55">
-                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7; ">
-                            <b>Gráfico 4: Funcionarios Presentes</b>
-                        </div>
-                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
-                            <?php include "grafico_funcionarios.php"; ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-55">
-                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7; ">
-                            <b>Gráfico 5: Modelos Mais Produzidos</b>
-                        </div>
-                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
-                            <?php include "grafico_modelo.php"; ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-55">
-                        <div class="card-header" style="background-color: #ffeba7; color:#ffeba7;">
-                            <b>Gráfico 6: Produção por Dia</b>
-                        </div>
-                        <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto;">
-                            <?php include "grafico_dias.php"; ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header" style="background-color: #ffeba7">
-                            <h5 class="modal-title" id="exampleModalLabel">REGISTRAR DADOS</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body text-start" style="background-color: #28294d; color: #ffeba7;">
-                            <form action="cadastro.php" method="post">
-                                <label class="form-label">QUANTIDADE PRODUZIDA</label>
-                                <input class="form-control" type="number" name="QuantProd" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
-                                </br>
-                                <label class="form-label">QUANTIDADE DE RETRABALHO</label>
-                                <input class="form-control" type="number" name="QuantRetrab" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
-                                </br>
-                                <label class="form-label">QUANTIDADE DE PERDAS</label>
-                                <input class="form-control" type="number" name="QuantPerdas" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
-                                </br>
-                                <label class="form-label">QUANTIDADE DE FUNCIONARIOS PRESENTES</label>
-                                <input class="form-control" type="number" name="QuantFuncionarios" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
-                                </br>
-                                <label class="form-label">TEMPO DE PRODUÇÃO</label>
-                                <input class="form-control" type="text" name="time" id="tempoProducao" required maxlength="5" placeholder="--:--" style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
-                                </br>
-                                <label class="form-label">MODELO PRODUZIDO</label>
-                                <select class="form-select" arial-label="MODELO PRODUZIDO" name="ModeloProd" required style="background:#23243a; color:#ffeba7; border:1px solid #ffeba7;">
-                                    <option selected disabled></option>
-                                    <option value="Modelo A">Modelo A</option>
-                                    <option value="Modelo B">Modelo B</option>
-                                    <option value="Modelo C">Modelo C</option>
-                                    <option value="Modelo D">Modelo D</option>
-                                </select>
-                                </br>
-                                <input type="submit" class="btn btn-success" value="CADASTRAR">
-                                <input type="button" class="btn btn-outline-danger" value="FECHAR" data-bs-dismiss="modal">
-                            </form>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>   
-            </div>
         </div>
+        <div class="container-fluid mt-4">
+            <!-- Botões de filtro para ordenação -->
+            <div class="mb-3 d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-outline-warning sort-filter" data-col="0">Ordenar por Data</button>
+                <button type="button" class="btn btn-outline-warning sort-filter" data-col="1">Ordenar por Produção</button>
+                <button type="button" class="btn btn-outline-warning sort-filter" data-col="2">Ordenar por Retrabalho</button>
+                <button type="button" class="btn btn-outline-warning sort-filter" data-col="3">Ordenar por Perdas</button>
+                <button type="button" class="btn btn-outline-warning sort-filter" data-col="4">Ordenar por Funcionários</button>
+                <button type="button" class="btn btn-outline-warning sort-filter" data-col="5">Ordenar por Tempo de Produção</button>
+                <button type="button" class="btn btn-outline-warning sort-filter" data-col="6">Ordenar por Modelo</button>
+            </div>
+            <table class="table table-dark table-striped" id="tabela-dados">
+                 <thead>
+                 <tr>
+                    <th>DATA</th>
+                    <th>PRODUÇÃO</th>
+                    <th>RETRABALHO</th>
+                    <th>PERDAS</th>
+                    <th>FUNCIONÁRIOS</th>
+                    <th>TEMPO DE PRODUÇÃO</th>
+                    <th>MODELO</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php 
+                    $total = count($datas);
+                    $por_pagina = 20;
+                    $pagina = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
+                    $inicio = ($pagina - 1) * $por_pagina;
+                    $fim = min($inicio + $por_pagina, $total);
+                    for ($i = $inicio; $i < $fim; $i++){
+                        echo "<tr>";
+                        echo "<td>".$datas[$i]."</td>";
+                        echo "<td>".$QuantProd[$i]."</td>";
+                        echo "<td>".$QuantRetrabs[$i]."</td>";
+                        echo "<td>".$QuantPerdass[$i]."</td>";
+                        echo "<td>".$QuantFuncionarioss[$i]."</td>";
+                        echo "<td>".$tempo[$i]."</td>";
+                        echo "<td>".$Modelos[$i]."</td>";
+                        echo "</tr>";
+                    }
+                ?>
+                </tbody>
+            </table>
+            <?php if ($total > $por_pagina) { 
+                $total_paginas = ceil($total / $por_pagina); ?>
+            <nav aria-label="...">
+                <ul class="pagination pagination-sm">
+                    <?php for ($p = 1; $p <= $total_paginas; $p++) { ?>
+                        <li class="page-item <?php if ($p == $pagina) echo 'active'; ?>">
+                            <a class="page-link" href="?pagina=<?php echo $p; ?>"><?php echo $p; ?></a>
+                        </li>
+                    <?php } ?>
+                </ul>
+            </nav>
+            <?php } ?>
+        </div>
+        <script>
+        // Ordenação de tabela por coluna 
+        document.addEventListener('DOMContentLoaded', function() {
+            const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+            const comparer = (idx, asc) => (a, b) => {
+                let v1 = getCellValue(asc ? a : b, idx);
+                let v2 = getCellValue(asc ? b : a, idx);
+                v1 = v1.replace(/\D/g, '') !== '' ? parseFloat(v1.replace(/[^\d,.-]/g, '').replace(',', '.')) : v1;
+                v2 = v2.replace(/\D/g, '') !== '' ? parseFloat(v2.replace(/[^\d,.-]/g, '').replace(',', '.')) : v2;
+                if (!isNaN(v1) && !isNaN(v2)) return v1 - v2;
+                return v1.toString().localeCompare(v2.toString(), 'pt-BR', {numeric: true});
+            };
+            // Estado de ordenação para cada coluna
+            const sortState = {};
+            document.querySelectorAll('.sort-filter').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const table = document.getElementById('tabela-dados');
+                    const tbody = table.querySelector('tbody');
+                    let col = parseInt(btn.getAttribute('data-col'));
+                    // Alterna asc/desc para cada coluna
+                    sortState[col] = !sortState[col];
+                    let asc = sortState[col];
+                    let rows = Array.from(tbody.querySelectorAll('tr'));
+                    rows.sort(comparer(col, asc));
+                    rows.forEach(tr => tbody.appendChild(tr));
+                });
+            });
+        });
+        </script>
         <!-- Adiciona máscara para o campo tempo de produção -->
         <script>
         document.addEventListener('DOMContentLoaded', function() {

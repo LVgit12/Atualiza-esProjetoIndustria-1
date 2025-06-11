@@ -1,15 +1,30 @@
 <?php
   $date = date("d/m/Y");
   $datas = json_decode(file_get_contents("data.json"), true);
-  $prod = json_decode(file_get_contents("Producao.json"), true);
-  $perda =  json_decode(file_get_contents("perdas.json"), true);
-  $retrabalho = json_decode(file_get_contents("retrabalho.json"), true); 
   $index = array_search($date, $datas);
 
-  $dia = isset($datas[$index]) ? $datas[$index] : '';
-  $fabricados = isset($prod[$index]) ? (float)$prod[$index] : 0;
-  $retrabs = isset($retrabalho[$index]) ? (float)$retrabalho[$index] : 0;
-  $perdas = isset($perda[$index]) ? (float)$perda[$index] : 0;
+  // Verifica se há dados filtrados
+  $prodfiltro = json_decode(file_get_contents("ProdFiltro.json"), true);
+  if (!is_array($prodfiltro)) $prodfiltro = [];
+  $perdaFiltro = json_decode(file_get_contents("PerdaFiltro.json"), true);  
+  if (!is_array($perdaFiltro)) $perdaFiltro = [];
+  $retrabalhoFiltro = json_decode(file_get_contents("RetrabFiltro.json"), true);
+  if (!is_array($retrabalhoFiltro)) $retrabalhoFiltro = [];
+
+  if (count($prodfiltro) > 0 || count($perdaFiltro) > 0 || count($retrabalhoFiltro) > 0) {
+    // Mostra dados filtrados
+    $prodValue = array_sum($prodfiltro);
+    $retrabalhoValue = array_sum($retrabalhoFiltro);
+    $perdaValue = array_sum($perdaFiltro);
+  } else {
+    // Mostra dados do dia atual
+    $prod = json_decode(file_get_contents("Producao.json"), true);
+    $perda = json_decode(file_get_contents("perdas.json"), true);
+    $retrabalho = json_decode(file_get_contents("retrabalho.json"), true);
+    $prodValue = isset($prod[$index]) ? (float)$prod[$index] : 0;
+    $retrabalhoValue = isset($retrabalho[$index]) ? (float)$retrabalho[$index] : 0;
+    $perdaValue = isset($perda[$index]) ? (float)$perda[$index] : 0;
+  }
 
   if (empty($datas)) {
       echo "Ainda não há dados cadastrados!";
@@ -22,11 +37,11 @@
         google.charts.setOnLoadCallback(drawChart);
         function drawChart() {
           var data = google.visualization.arrayToDataTable([
-            ['Fabricados', 'Retrabalho'],
-            ['Fabricados',     <?php echo $fabricados; ?>],
-            ['Retrabalho',     <?php echo $retrabs; ?>, ],
-            ['Perdas',  <?php echo $perdas; ?>]]
-          );
+            ['Tipo', 'Quantidade'],
+            ['Fabricados',     <?php echo $prodValue; ?>],
+            ['Retrabalho',     <?php echo $retrabalhoValue; ?>],
+            ['Perdas',  <?php echo $perdaValue; ?>]
+          ]);
 
           var options = {
             title: '',
@@ -42,8 +57,6 @@
       <div id="1" style="width: 400px; height: 300px;"></div>
     </body>
   </html>
-
-    
 <?php 
   }
 ?>

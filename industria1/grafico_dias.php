@@ -1,31 +1,89 @@
-<html>
-  <head>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawChart);
+<?php
 
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Year', 'Sales', 'Expenses', 'Profit'],
-          ['2014', 1000, 400, 200],
-          ['2015', 1170, 460, 250],
-          ['2016', 660, 1120, 300],
-          ['2017', 1030, 540, 350]
-        ]);
+  $date = date("d/m/Y");
+  $datas = json_decode(file_get_contents("data.json"), true);
+  $index = array_search($date, $datas);
+  $DataFiltro = json_decode(file_get_contents("DataFiltro.json"), true);
+  $TaxaProd = json_decode(file_get_contents("TxProd.json"), true);
+  $TaxaPerda = json_decode(file_get_contents("Txrefugo.json"), true);
+  $Producao = json_decode(file_get_contents("Producao.json"), true);
+  $Perda = json_decode(file_get_contents("perdas.json"), true);
+  if (!is_array($DataFiltro)) $DataFiltro = [];
+  if($_SESSION['filtro'] == true){
+    $totalproduzido = 0;
+    $totalperdido = 0;
+    $quantia = count($DataFiltro);  
+    foreach($DataFiltro as $item){
+      $indice = array_search($item, $datas);
+      $totalproduzido += $Producao[$indice];
+      $totalperdido += $Perda[$indice];
+    }
+    $taxaproducao = ($totalproduzido / ($quantia * 200)) * 100;
+    $taxaperda = ($totalperdido / $totalproduzido) * 100;
+    ?>
+      <html>
+        <head>
+          <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+          <script type="text/javascript">
+            google.charts.load('current', {'packages':['bar']});
+            google.charts.setOnLoadCallback(drawChart);
 
-        var options = {
-          chart: {
-            
-          }
-        };
+            function drawChart() {
+              var data = google.visualization.arrayToDataTable([
+                ['TAXA DE PRODUÇÃO', 'TAXA DE REFUGO'],
+                ['Taxa de produção:', <?PHP echo $taxaproducao ?>],
+                ['Taxa de refugo:', <?php echo $taxaperda ?>]
+              ]);
 
-        var chart = new google.charts.Bar(document.getElementById('grafico6'));
-        chart.draw(data, google.charts.Bar.convertOptions(options));
-      }
-    </script>
-  </head>
-  <body>
-    <div id="grafico6" style="width: 550px; height: 300px;"></div>
-  </body>
-</html>
+              var options = {
+                chart: {
+                  
+                }
+              };
+
+              var chart = new google.charts.Bar(document.getElementById('grafico7'));
+              chart.draw(data, google.charts.Bar.convertOptions(options));
+            }
+          </script>
+        </head>
+        <body>
+          <div id="grafico7" style="width: 550px; height: 300px;"></div>
+        </body>
+      </html>
+      
+
+    <?php
+  }
+  else{?>
+      <html>
+            <head>
+              <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+              <script type="text/javascript">
+                google.charts.load('current', {'packages':['bar']});
+                google.charts.setOnLoadCallback(drawStuff);
+
+                function drawStuff() {
+                  var data = new google.visualization.arrayToDataTable([
+                    ['TAXA DE PRODUÇÃO', 'TAXA DE REFUGO'],
+                    ['Taxa de produção:', <?PHP echo $TaxaProd[$index] ?>],
+                    ['Taxa de refugo:', <?php echo $TaxaPerda[$index] ?>]
+                  ]);
+
+                  var options = {
+                    chart: {
+                      
+                    };
+                  }
+                  var chart = new google.charts.Bar(document.getElementById('grafico7'));
+                  chart.draw(data, google.charts.Bar.convertOptions(options));
+                };
+              </script>
+            </head>
+            <body>
+              <div id="grafico7" style="width: 550px; height: 300px;"></div>
+            </body>
+    </html>
+<?php
+    }
+    ?>
+      

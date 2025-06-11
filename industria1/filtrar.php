@@ -1,7 +1,10 @@
 <?php
     session_start();
-    $_SESSION['filtro'] = true;
+
+    
+    $_SESSION['filtro'] = true; // Criando variável session
     $datas = json_decode(file_get_contents("data.json"), true);
+    if (!is_array($datas)) $datas = [];
     $QuantProd = json_decode(file_get_contents("Producao.json"), true);
     if (!is_array($QuantProd)) $QuantProd = [];
     $QuantRetrab = json_decode(file_get_contents("retrabalho.json"), true);
@@ -36,6 +39,8 @@
     //     }
     // } 
     
+
+    //Recebendo as datas do filtro
     $dataInicial = $_GET["data_inicial"] ?? ''; 
     $dataFinal = $_GET["data_final"] ?? ''  ;
     $hora = date('H:i:s');
@@ -43,13 +48,15 @@
     $datafinal = strtotime($dataFinal) + strtotime($hora);
     $i = 0;
     
-    $ProdFiltro = json_decode(file_get_contents("ProdFiltro.json"), true);
-    $RetrabFiltro = json_decode(file_get_contents("RetrabFiltro.json"), true);
-    $PerdaFiltro = json_decode(file_get_contents("PerdaFiltro.json"), true);
-    $FuncionarioFiltro = json_decode(file_get_contents("FuncionarioFiltro.json"), true);
-    $ModeloFiltro = json_decode(file_get_contents("ModeloFiltro.json"), true);
-    $TempoFiltro = json_decode(file_get_contents("TempoFiltro.json"), true);
+    $DataFiltro = [];
+    $ProdFiltro = [];
+    $RetrabFiltro = [];
+    $PerdaFiltro = [];
+    $FuncionarioFiltro = [];
+    $ModeloFiltro = [];
+    $TempoFiltro = [];
     
+    if (!is_array($DataFiltro)) $DataFiltro = [];
     if (!is_array($ProdFiltro)) $ProdFiltro = [];
     if (!is_array($RetrabFiltro)) $RetrabFiltro = [];
     if (!is_array($PerdaFiltro)) $PerdaFiltro = [];
@@ -57,6 +64,15 @@
     if (!is_array($ModeloFiltro)) $ModeloFiltro = [];
     if (!is_array($TempoFiltro)) $TempoFiltro = [];
 
+    foreach($datas as $item){
+         $data1 = strtotime($item) + strtotime($hora);
+         if($data1 >= $datainicial && $data1 <= $datafinal){
+            $DataFiltro[] = $item;
+        }
+    $i++;
+    }
+
+    $i = 0;
     foreach($QuantProd as $item){
          $dataAtual = strtotime($datas[$i]) + strtotime($hora);
          if($dataAtual >= $datainicial && $dataAtual <= $datafinal){
@@ -109,6 +125,8 @@
         }
     $i++;
     }
+    $datacao = json_encode($DataFiltro, JSON_PRETTY_PRINT);
+    file_put_contents("DataFiltro.json", $datacao); 
     $producao = json_encode($ProdFiltro, JSON_PRETTY_PRINT);
     file_put_contents("ProdFiltro.json", $producao); 
     $retrabalho = json_encode($RetrabFiltro, JSON_PRETTY_PRINT);
@@ -121,4 +139,6 @@
     file_put_contents("ModeloFiltro.json", $modelo);
     $tempo = json_encode($TempoFiltro, JSON_PRETTY_PRINT);
     file_put_contents("TempoFiltro.json", $tempo);
+
+    header("Location:inicial.php");
 ?>
