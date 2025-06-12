@@ -1,3 +1,7 @@
+<?php
+    $_SESSION['filtro'] = false;
+    $_SESSION['filtrograficos'] = false;
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>

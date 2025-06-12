@@ -4,7 +4,7 @@
 
     session_start();
     $datas[] = json_decode(file_get_contents("data.json"), true);
-    $date = date("d/m/Y");
+    $date = date("d-m-Y");
     $index = array_search($date, $datas);
     $_SESSION['index'] = $index;
     if(count($datas) == 0) {
@@ -249,11 +249,11 @@
             <form class="row g-2 align-items-end justify-content-start mb-4" method="get" action="filtrar.php">
                 <div class="col-auto">
                     <label for="data_inicial" class="label-custom">Data Inicial</label>
-                    <input type="date" class="form-control" name="data_inicial" style="color:#ffeba7;" value="<?php echo isset($_GET['data_inicial']) ? htmlspecialchars($_GET['data_inicial']) : ''; ?>">
+                    <input type="date" class="form-control" name="data_inicial" style="color:#ffeba7;" required value="<?php echo isset($_GET['data_inicial']) ? htmlspecialchars($_GET['data_inicial']) : ''; ?>">
                 </div>
                 <div class="col-auto">
                     <label for="data_final" class="label-custom">Data Final</label>
-                    <input type="date" class="form-control" name="data_final" style="color:#ffeba7;" value="<?php echo isset($_GET['data_final']) ? htmlspecialchars($_GET['data_final']) : ''; ?>">
+                    <input type="date" class="form-control" name="data_final" style="color:#ffeba7;" required value="<?php echo isset($_GET['data_final']) ? htmlspecialchars($_GET['data_final']) : ''; ?>">
                 </div>
                 <div class="col-auto" style="padding-top: 28px;">
                     <button type="submit"  class="btn btn-filter-custom d-flex align-items-center px-4 py-2" style="font-weight:700; color:#23243a;">
@@ -283,11 +283,11 @@
                             <?php 
                                 if($_SESSION['filtro'] == false){
                                     $prod = json_decode(file_get_contents("Producao.json"), true);
-                                    if($index <= 0){
-                                        echo $prod[$index];
+                                    if(empty($prod)){
+                                        echo "Ainda não há dados cadastrados no dia de hoje!";
                                     }
                                     else{
-                                        echo "Ainda não há dados cadastrados no dia de hoje!";
+                                        echo $prod[$index];
                                     }
                                 }
                                 else{
@@ -314,11 +314,11 @@
                             <?php 
                                 if($_SESSION['filtro'] == false){
                                     $perda = json_decode(file_get_contents("perdas.json"), true);
-                                    if($index <= 0){
-                                        echo $perda[$index];
+                                    if(empty($perda)){
+                                        echo "Ainda não há dados cadastrados no dia de hoje!";
                                     }
                                     else{
-                                        echo "Ainda não há dados cadastrados no dia de hoje!";
+                                        echo $perda[$index];
                                     }
                                 }
                                 else{
@@ -344,11 +344,12 @@
                             <?php 
                                 if($_SESSION['filtro'] == false){
                                     $Taxaprod = json_decode(file_get_contents("TxProd.json"), true);
-                                    if($index <= 0){
-                                        echo $Taxaprod[$index];
-                                    }
-                                    else{
+                                    if(empty($Taxaprod)){
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
+                                       
+                                    }
+                                    else{   
+                                        echo round($Taxaprod[$index], 2)."%";
                                     }
                                 }
                                 else{
@@ -362,7 +363,7 @@
                                     $quantia = count($Producao1);
                                     $Taxaprod = ($total / (200 * $quantia)) * 100;
                                     $_SESSION['Taxaprod'] = $Taxaprod;
-                                    echo $Taxaprod."%";
+                                    echo round($Taxaprod, 2)."%";
                                 }
                             ?>
                         </h3></center>
@@ -377,11 +378,11 @@
                             <?php 
                                 if($_SESSION['filtro'] == false){
                                     $tr = json_decode(file_get_contents("Txrefugo.json"), true);
-                                    if($index <= 0){
-                                        echo $tr[$index]."%";
+                                    if(empty($tr)){   
+                                        echo "Ainda não há dados cadastrados no dia de hoje!";
                                     }
                                     else{
-                                        echo "Ainda não há dados cadastrados no dia de hoje!";
+                                        echo round($tr[$index], 2)."%";
                                     }
                                 }
                                 else{
@@ -403,7 +404,7 @@
                                     
                                     $Taxarefugo = ($totalperdas / $total) * 100;
                                     $_SESSION['TaxaRefugo'] = $Taxarefugo;
-                                    echo $Taxarefugo."%";
+                                    echo round($Taxarefugo, 2)."%";
                                 } 
                             ?>
                         </h3></center>
@@ -416,13 +417,25 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br> 
                             <?php 
-                                $tr = json_decode(file_get_contents("funcionarios.json"), true);
-                                if($index <= 0){
-                                    echo $tr[$index];
+                                if($_SESSION['filtro'] == false){
+                                    $tr = json_decode(file_get_contents("funcionarios.json"), true);
+                                    if(empty($tr)){
+                                        echo "Ainda não há dados cadastrados no dia de hoje!";
+                                    }
+                                    else{
+                                        echo $tr[$index];
+                                    }
                                 }
                                 else{
-                                    echo "Ainda não há dados cadastrados no dia de hoje!";
-                                }
+                                    $funcionarios = json_decode(file_get_contents("funcionarios.json"), true);
+                                    if (!is_array($funcionarios)) $funcionarios = [];
+                                    $totalfuncionarios = 0;
+
+                                    foreach($funcionarios as $item2){
+                                        $totalfuncionarios += intval($item2);
+                                    }
+                                    echo $totalfuncionarios;
+                                } 
                             ?>
                         </h3></center>
                     </div>
@@ -436,11 +449,11 @@
                             <?php 
                                 if($_SESSION['filtro'] == false){
                                     $Retrabalho = json_decode(file_get_contents("retrabalho.json"), true);
-                                    if($index <= 0){
-                                        echo $Retrabalho[$index];
+                                    if(empty($Retrabalho)){
+                                        echo "Ainda não há dados cadastrados no dia de hoje!";
                                     }
                                     else{
-                                        echo "Ainda não há dados cadastrados no dia de hoje!";
+                                        echo $Retrabalho[$index];
                                     }
                                 }
                                 else{
@@ -452,6 +465,7 @@
                                         $totalRetrab += intval($item5);
                                     }
                                     echo $totalRetrab;
+                                    $_SESSION['filtro'] = false;
                                 }
                             ?>
                         </h3></center>
@@ -487,6 +501,7 @@
                                         <div class="card-details">
                                             <p class="text-title">Resumo de Produção do Dia: <?php echo $date; ?></p>
                                             <p class="text-body"><?php include "grafico_dias.php"; ?></p>
+                                            <?php $_SESSION['filtrograficos'] = false; ?>
                                         </div>
                                     </div>    
                                 </div>
@@ -532,7 +547,6 @@
                                 <input type="button" class="btn btn-outline-danger" value="FECHAR" data-bs-dismiss="modal">
                             </form>
                         </div>
-                        <?php $_SESSION['filtro'] = false; ?>
                     </div>
                 </div>
             </div>   

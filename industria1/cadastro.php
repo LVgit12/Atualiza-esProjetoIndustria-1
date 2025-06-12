@@ -1,6 +1,6 @@
 <?php
     session_start();
-    $data = date('Y-d-m');
+    $data = date('d-m-Y');
     $datas = json_decode(file_get_contents("data.json"), true);
     if (!is_array($datas)) $datas = [];
     if (in_array($data, $datas)) {
@@ -64,6 +64,7 @@
             // Lê o array existente ou cria um novo se estiver vazio
             $recebetx = json_decode(file_get_contents("TxProd.json"), true);
             if (!is_array($recebetx)) $recebetx = [];
+            $Taxaproducao = round($recebetx, 2);
             $recebetx[] = $Taxaproducao;
             // Salva o array atualizado
             file_put_contents("TxProd.json", json_encode($recebetx, JSON_PRETTY_PRINT));
@@ -71,6 +72,7 @@
             $Taxarefugo = ($QuantPerdass / $QuantProds) * 100;
             $recebeRefugo = json_decode(file_get_contents("Txrefugo.json"), true);
             if (!is_array($recebeRefugo)) $recebeRefugo = [];
+            $Taxarefugo = round($Taxarefugo, 2);
             $recebeRefugo[] = $Taxarefugo;
             // Salva o array atualizado
             file_put_contents("Txrefugo.json", json_encode($recebeRefugo, JSON_PRETTY_PRINT));

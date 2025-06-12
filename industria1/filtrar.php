@@ -1,8 +1,17 @@
 <?php
     session_start();
 
-    
-    $_SESSION['filtro'] = true; // Criando variável session
+    $dataInicial = $_GET["data_inicial"] ?? ''; 
+    $dataFinal = $_GET["data_final"] ?? ''  ;
+    $hora = date('H:i:s');
+    $datainicial = strtotime($dataInicial) + strtotime($hora);
+    $datafinal = strtotime($dataFinal) + strtotime($hora);
+    if($datainicial > $datafinal){
+        header("Location:inicial.php");
+        exit;
+    }
+    $_SESSION['filtro'] = true;
+    $_SESSION['filtrograficos'] = true; // Criando variável session
     $datas = json_decode(file_get_contents("data.json"), true);
     if (!is_array($datas)) $datas = [];
     $QuantProd = json_decode(file_get_contents("Producao.json"), true);
@@ -39,13 +48,6 @@
     //     }
     // } 
     
-
-    //Recebendo as datas do filtro
-    $dataInicial = $_GET["data_inicial"] ?? ''; 
-    $dataFinal = $_GET["data_final"] ?? ''  ;
-    $hora = date('H:i:s');
-    $datainicial = strtotime($dataInicial) + strtotime($hora);
-    $datafinal = strtotime($dataFinal) + strtotime($hora);
     $i = 0;
     
     $DataFiltro = [];

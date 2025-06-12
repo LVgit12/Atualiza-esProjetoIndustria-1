@@ -167,6 +167,15 @@
         .btn-filter-custom a:hover {
             text-decoration: none !important;
         }
+        .btn-outline-warning{
+            color: #ffeba7;
+            background-color: #23243a;
+            border-color    : #ffeba7;
+        }
+        .btn-outline-warning:hover{
+            background-color: #ffeba7;
+            
+        }
         /* Responsividade */
         @media (max-width: 991.98px) {
             .user-info {

@@ -54,7 +54,7 @@
       </script>
     </head>
     <body>
-      <div id="1" style="width: 400px; height: 300px;"></div>
+      <div id="1" style="width: 500px; height: 300px;"></div>
     </body>
   </html>
 <?php 
