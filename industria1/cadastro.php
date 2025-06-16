@@ -64,7 +64,7 @@
             // Lê o array existente ou cria um novo se estiver vazio
             $recebetx = json_decode(file_get_contents("TxProd.json"), true);
             if (!is_array($recebetx)) $recebetx = [];
-            $Taxaproducao = round($recebetx, 2);
+            $Taxaproducao = round($Taxaproducao, 2);
             $recebetx[] = $Taxaproducao;
             // Salva o array atualizado
             file_put_contents("TxProd.json", json_encode($recebetx, JSON_PRETTY_PRINT));

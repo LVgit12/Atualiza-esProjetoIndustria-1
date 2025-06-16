@@ -1,10 +1,11 @@
 <?php 
     // @see https://desenvolvimentoparaweb.com/css/css-breakpoints-maneira-correta/
 
-
     session_start();
+    $verificador = isset($_SESSION['filtrograficos']) ? $_SESSION['filtrograficos'] : false;
     $datas[] = json_decode(file_get_contents("data.json"), true);
     $date = date("d-m-Y");
+    $DataFiltro = json_decode(file_get_contents("DataFiltro.json"), true);
     $index = array_search($date, $datas);
     $_SESSION['index'] = $index;
     if(count($datas) == 0) {
@@ -271,6 +272,16 @@
                         <span style="font-weight:700; color:#23243a;">Cadastrar Produção</span>
                     </button>
                 </div>
+                <?php if ($verificador == true) { ?>
+                <div class="col-auto" style="padding-top: 30px;">
+                    <button type="button" class="btn btn-filter-custom d-flex align-items-center px-4 py-2" onclick="window.location.href='removerFiltro.php'">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#23243a" class="bi bi-x" viewBox="0 0 16 16">
+                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                        <span style="font-weight:700; color:#23243a;">REMOVER FILTRO</span>
+                    </button>
+                </div>
+                <?php } ?>
             </form>
 
             <div class="row g-3 align-items">
@@ -281,7 +292,7 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br>
                             <?php 
-                                if($_SESSION['filtro'] == false){
+                                if($verificador == false){
                                     $prod = json_decode(file_get_contents("Producao.json"), true);
                                     if(empty($prod)){
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
@@ -312,7 +323,7 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br>
                             <?php 
-                                if($_SESSION['filtro'] == false){
+                                if($verificador){
                                     $perda = json_decode(file_get_contents("perdas.json"), true);
                                     if(empty($perda)){
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
@@ -342,7 +353,7 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br>
                             <?php 
-                                if($_SESSION['filtro'] == false){
+                                if($verificador == false){
                                     $Taxaprod = json_decode(file_get_contents("TxProd.json"), true);
                                     if(empty($Taxaprod)){
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
@@ -376,7 +387,7 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br> 
                             <?php 
-                                if($_SESSION['filtro'] == false){
+                                if($verificador == false){
                                     $tr = json_decode(file_get_contents("Txrefugo.json"), true);
                                     if(empty($tr)){   
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
@@ -417,7 +428,7 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br> 
                             <?php 
-                                if($_SESSION['filtro'] == false){
+                                if($verificador == false){
                                     $tr = json_decode(file_get_contents("funcionarios.json"), true);
                                     if(empty($tr)){
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
@@ -447,7 +458,7 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br> 
                             <?php 
-                                if($_SESSION['filtro'] == false){
+                                if($verificador == false){
                                     $Retrabalho = json_decode(file_get_contents("retrabalho.json"), true);
                                     if(empty($Retrabalho)){
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
@@ -477,34 +488,75 @@
             <!-- Gráficos principais: 1 e 2 lado a lado, cobrindo toda a largura -->
             <div class="row g-3 align-items"><!-- align-items-end para alinhar os cards pela base -->
                 <div class="cols-12 col-md-12 mb-0"><!-- mb-0 remove margem inferior -->
-                    <div class="card" style="height:55vh; min-height:120px; max-height:400px; margin-bottom:0;">
+                    <div class="card" style="height:55vh; min-height:800px; max-height:900px; margin-bottom:0;">
                         <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                             <div class="row g-3 align-items">
-                                <div class="cols-12 col-md-4 mb-0">
+                                <div class="cols-12 col-md-12 mb-0">
                                     <div class="card">
                                         <div class="card-details">
-                                            <p class="text-title">Resumo de Produção do Dia: <?php echo $date; ?></p>
-                                            <p class="text-body"><?php include "grafico.php"; ?></p>
+                                            <p class="text-title"><h5><b>
+                                                <?php $primeiroProd = reset($DataFiltro); $ultimoProd = end($DataFiltro);
+                                                    if ($verificador == true){
+                                                        if ($primeiroProd == $ultimoProd) {
+                                                            echo "Quantidade Produzida do dia: $primeiroProd"; 
+                                                        } else {
+                                                         echo "Quantidade Produzida dos dias: $primeiroProd a $ultimoProd";}}
+                                                    else{
+                                                            echo "Quantidade Produzida do dia: $date";
+                                                         } ?></b></h5></p>
+                                            <p class="text-body"><?php include "grafico_Barra_QuantProd.php"; ?></p>
                                         </div>
                                     </div>    
                                 </div>
                                 <div class="cols-12 col-md-4 mb-0">
                                     <div class="card">
                                         <div class="card-details">
-                                            <p class="text-title">Resumo de Produção do Dia: <?php echo $date; ?></p>
-                                            <p class="text-body"><?php include "grafico_produzidas.php"; ?></p>
+                                            <p class="text-title"><h5><b><?php $primeiroProd = reset($DataFiltro); $ultimoProd = end($DataFiltro);
+                                                    if ($verificador == true){
+                                                        if ($primeiroProd == $ultimoProd) {
+                                                            echo "Resumo da Produção do dia: $primeiroProd"; 
+                                                        } else {
+                                                         echo "Resumo Total das Produções dos dias: $primeiroProd a $ultimoProd";}}
+                                                    else{
+                                                            echo "Resumo da Produção do dia: $date";
+                                                         } ?></h5></b></p>
+                                            <p class="text-body"><?php include "grafico_Rosca_Prod.php"; ?></p>
                                         </div>
                                     </div>    
                                 </div>
                                 <div class="cols-12 col-md-4 mb-0">
                                     <div class="card">
                                         <div class="card-details">
-                                            <p class="text-title">Resumo de Produção do Dia: <?php echo $date; ?></p>
-                                            <p class="text-body"><?php include "grafico_dias.php"; ?></p>
-                                            <?php $_SESSION['filtrograficos'] = false; ?>
+                                            <p class="text-title"><h5><b><?php $primeiroProd = reset($DataFiltro); $ultimoProd = end($DataFiltro);
+                                                    if ($verificador == true){
+                                                        if ($primeiroProd == $ultimoProd) {
+                                                            echo "Taxa de Produção do dia: $primeiroProd"; 
+                                                        } else {
+                                                         echo "Taxa das Produções dos dias: $primeiroProd a $ultimoProd";}}
+                                                    else{
+                                                            echo "Taxa da Produção do dia: $date";
+                                                         } ?></h5></b></p>
+                                            <p class="text-body"><?php include "grafico_TaxaProd.php"; ?></p>
                                         </div>
                                     </div>    
                                 </div>
+                                <div class="cols-12 col-md-4 mb-0">
+                                    <div class="card">
+                                        <div class="card-details">
+                                            <p class="text-title"><h5><b><?php $primeiroProd = reset($DataFiltro); $ultimoProd = end($DataFiltro);
+                                                    if ($verificador == true){
+                                                        if ($primeiroProd == $ultimoProd) {
+                                                            echo "Taxa de Perda do dia: $primeiroProd"; 
+                                                        } else {
+                                                         echo "Taxa de Perdas dos dias: $primeiroProd a $ultimoProd";}}
+                                                    else{
+                                                            echo "Taxa de Perda do dia: $date";
+                                                         } ?></h5></b></p>
+                                            <p class="text-body"><?php include "grafico_TaxaPerda.php"; ?></p>
+                                        </div>
+                                    </div>    
+                                </div>
+                            <?php $_SESSION['filtrograficos'] = false; ?>                    
                             </div>
                         </div>
                     </div>

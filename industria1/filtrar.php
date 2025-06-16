@@ -11,7 +11,7 @@
         exit;
     }
     $_SESSION['filtro'] = true;
-    $_SESSION['filtrograficos'] = true; // Criando variável session
+    $_SESSION['filtrograficos'] = true;
     $datas = json_decode(file_get_contents("data.json"), true);
     if (!is_array($datas)) $datas = [];
     $QuantProd = json_decode(file_get_contents("Producao.json"), true);
