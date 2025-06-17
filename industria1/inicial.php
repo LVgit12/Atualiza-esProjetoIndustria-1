@@ -2,7 +2,7 @@
     // @see https://desenvolvimentoparaweb.com/css/css-breakpoints-maneira-correta/
 
     session_start();
-    $verificador = $_SESSION['filtro'];
+    $verificador = isset($_SESSION['filtro']) ? $_SESSION['filtro'] : null;
     $verificadorgraficos = $_SESSION['filtrograficos'];
     $datas = json_decode(file_get_contents("data.json"), true);
     $date = date("d-m-Y");
@@ -42,6 +42,9 @@
         $id = array_search($_SESSION['usuario'], $emails);
         $nomes = $_SESSION['nomes'];
     }
+
+    $filtro = isset($_GET['filtro']) ? $_GET['filtro'] : null;
+    $filtrograficos = isset($_GET['filtrograficos']) ? $_GET['filtrograficos'] : (isset($_POST['filtrograficos']) ? $_POST['filtrograficos'] : null);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">

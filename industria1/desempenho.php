@@ -2,7 +2,7 @@
     // @see https://desenvolvimentoparaweb.com/css/css-breakpoints-maneira-correta/
 
     session_start();
-    $verificador = $_SESSION['filtrorelatorio']; // Corrigido nome da variável
+    $verificador = isset($_SESSION['filtrorelatorio']) ? $_SESSION['filtrorelatorio'] : null; // Corrigido nome da variável
     $datas = json_decode(file_get_contents("data.json"), true);
     if (!is_array($datas)) $datas = [];
     $date = date("d/m/Y");
