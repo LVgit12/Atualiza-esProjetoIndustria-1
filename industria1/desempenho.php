@@ -1,8 +1,8 @@
 <?php 
     // @see https://desenvolvimentoparaweb.com/css/css-breakpoints-maneira-correta/
 
-
     session_start();
+    $verificador = $_SESSION['filtrorelatorio']; // Corrigido nome da variável
     $datas = json_decode(file_get_contents("data.json"), true);
     if (!is_array($datas)) $datas = [];
     $date = date("d/m/Y");
@@ -25,6 +25,14 @@
     $QuantFuncionarioss = json_decode(file_get_contents("funcionarios.json"), true);
     $Modelos = json_decode(file_get_contents("ModeloProd.json"), true);
     $tempo = json_decode(file_get_contents("tempoProd.json"), true);
+    
+    $DataFiltro = json_decode(file_get_contents("DataFiltro.json"), true);
+    $ProdFiltro = json_decode(file_get_contents("ProdFiltro.json"), true);
+    $RetrabFiltro = json_decode(file_get_contents("RetrabFiltro.json"), true);
+    $PerdaFiltro = json_decode(file_get_contents("PerdaFiltro.json"), true);
+    $FuncionarioFiltro = json_decode(file_get_contents("FuncionarioFiltro.json"), true);
+    $ModeloFiltro = json_decode(file_get_contents("ModeloFiltro.json"), true);
+    $TempoFiltro = json_decode(file_get_contents("TempoFiltro.json"), true);
     if (!is_array($QuantProd)) $QuantProd = [];
     if (!is_array($QuantRetrabs)) $QuantRetrabs = [];
     if (!is_array($QuantPerdass)) $QuantPerdass = [];
@@ -36,6 +44,13 @@
     $_SESSION['senhas'] = $senhas;
     $_SESSION['emails'] = $emails;
 
+    $data_inicial = isset($_GET['data_inicialRelatorio']) ? $_GET['data_inicialRelatorio'] : '';
+    $data_final = isset($_GET['data_finalRelatorio']) ? $_GET['data_finalRelatorio'] : '';
+    if ($data_inicial !== '' && $data_final !== '') {
+        // Redireciona para filtrarRelatorio.php para aplicar o filtro
+        header('Location: filtrarRelatorio.php?data_inicialRelatorio=' . urlencode($data_inicial) . '&data_finalRelatorio=' . urlencode($data_final));
+        exit;
+    }
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -231,9 +246,24 @@
                 padding: 10px 4px;
             }
         }
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #tabela-dados, #tabela-dados * {
+                visibility: visible !important;
+            }
+            #tabela-dados {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                background: white;
+                color: black;
+            }
+        }
     </style>
     <body>
-        
         <div class="card-body" style="background-color: #ffeba7">    
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <h2><b>RELATÓRIO</b></h2>
@@ -241,7 +271,6 @@
                     <div class="menu-links" style="display: flex; flex: 1; justify-content: center;">
                         <a href="inicial.php">VISÃO GERAL</a>
                         <a href="desempenho.php">RELATÓRIO</a>
-                        <a href="gravar.php">IMPRIMIR DADOS</a>
                     </div>
                     <div class="user-info">
                         <a href="sair.php" class="sair" title="Sair">
@@ -253,32 +282,31 @@
                     </div>
                 </nav>
             </div>
-        </div> 
-        
+        </div>
         <div class="container-fluid mt-4">
-            <form class="row g-2 align-items-end justify-content-start mb-4" method="get">
+            <form class="row g-2 align-items-end justify-content-start mb-4" method="get" action="filtrarRelatorio.php">
                 <div class="col-auto">
                     <label for="data_inicial" class="label-custom">Data Inicial</label>
-                    <input type="date" class="form-control" id="data_inicial" name="data_inicial" style="color:#ffeba7;" value="<?php echo isset($_GET['data_inicial']) ? htmlspecialchars($_GET['data_inicial']) : ''; ?>">
+                    <input type="date" class="form-control" id="data_inicialRelatorio" name="data_inicialRelatorio" style="color:#ffeba7;" value="<?php echo isset($_GET['data_inicialRelatorio']) ? htmlspecialchars($_GET['data_inicialRelatorio']) : ''; ?>">
                 </div>
                 <div class="col-auto">
                     <label for="data_final" class="label-custom">Data Final</label>
-                    <input type="date" class="form-control" id="data_final" name="data_final" style="color:#ffeba7;" value="<?php echo isset($_GET['data_final']) ? htmlspecialchars($_GET['data_final']) : ''; ?>">
+                    <input type="date" class="form-control" id="data_finalRelatorio" name="data_finalRelatorio" style="color:#ffeba7;" value="<?php echo isset($_GET['data_finalRelatorio']) ? htmlspecialchars($_GET['data_finalRelatorio']) : ''; ?>">
                 </div>
                 <div class="col-auto" style="padding-top: 28px;">
-                    <button type="button" class="btn btn-filter-custom d-flex align-items-center px-4 py-2">
+                    <button type="submit" class="btn btn-filter-custom d-flex align-items-center px-4 py-2" style="font-weight:700; color:#23243a;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#23243a" class="me-2" viewBox="0 0 16 16">
                             <path d="M6 10.117V14.5a.5.5 0 0 0 .757.429l2-1.2A.5.5 0 0 0 9 13.5v-3.383l5.447-6.516A1 1 0 0 0 13.882 2H2.118a1 1 0 0 0-.765 1.601L6 10.117z"/>
                         </svg>
                         <span style="font-weight:700; color:#23243a;">Filtrar</span>
                     </button>
                 </div>
-                <div class="col-auto" style="padding-top: 30px;">
-                    <button type="button" class="btn btn-filter-custom d-flex align-items-center px-4 py-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <div class="col-auto" style="padding-top: 28px;">
+                    <button type="button" class="btn btn-filter-custom d-flex align-items-center px-4 py-2" onclick="window.print()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#23243a" class="me-2" viewBox="0 0 16 16">
-                        <path d="M14 0a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zM5.904 10.803 10 6.707v2.768a.5.5 0 0 0 1 0V5.5a.5.5 0 0 0-.5-.5H6.525a.5.5 0 1 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 .707.707"/>
+                            <path d="M2 7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7zm2-5a2 2 0 0 0-2 2v2h12V4a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v1H3V4a1 1 0 0 1 1-1zm0 8a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
                         </svg>
-                        <span style="font-weight:700; color:#23243a;">Cadastrar Produção</span>
+                        <span style="font-weight:700; color:#23243a;">Imprimir</span>
                     </button>
                 </div>
             </form>
@@ -308,21 +336,41 @@
                 </thead>
                 <tbody>
                 <?php 
-                    $total = count($datas);
-                    $por_pagina = 20;
-                    $pagina = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
-                    $inicio = ($pagina - 1) * $por_pagina;
-                    $fim = min($inicio + $por_pagina, $total);
-                    for ($i = $inicio; $i < $fim; $i++){
-                        echo "<tr>";
-                        echo "<td>".$datas[$i]."</td>";
-                        echo "<td>".$QuantProd[$i]."</td>";
-                        echo "<td>".$QuantRetrabs[$i]."</td>";
-                        echo "<td>".$QuantPerdass[$i]."</td>";
-                        echo "<td>".$QuantFuncionarioss[$i]."</td>";
-                        echo "<td>".$tempo[$i]."</td>";
-                        echo "<td>".$Modelos[$i]."</td>";
-                        echo "</tr>";
+                    if($verificador == false){
+                        $total = count($datas);
+                        $por_pagina = 20;
+                        $pagina = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
+                        $inicio = ($pagina - 1) * $por_pagina;
+                        $fim = min($inicio + $por_pagina, $total);
+                        for ($i = $inicio; $i < $fim; $i++){
+                            echo "<tr>";
+                            echo "<td>".$datas[$i]."</td>";
+                            echo "<td>".$QuantProd[$i]."</td>";
+                            echo "<td>".$QuantRetrabs[$i]."</td>";
+                            echo "<td>".$QuantPerdass[$i]."</td>";
+                            echo "<td>".$QuantFuncionarioss[$i]."</td>";
+                            echo "<td>".$tempo[$i]."</td>";
+                            echo "<td>".$Modelos[$i]."</td>";
+                            echo "</tr>";
+                        }
+                    }
+                    else{
+                        $total = count($DataFiltro); // Corrigido para usar array filtrado
+                        $por_pagina = 20;
+                        $pagina = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
+                        $inicio = ($pagina - 1) * $por_pagina;
+                        $fim = min($inicio + $por_pagina, $total);
+                        for ($i = $inicio; $i < $fim; $i++){
+                            echo "<tr>";
+                            echo "<td>".$DataFiltro[$i]."</td>";
+                            echo "<td>".$ProdFiltro[$i]."</td>";
+                            echo "<td>".$RetrabFiltro[$i]."</td>";
+                            echo "<td>".$PerdaFiltro[$i]."</td>";
+                            echo "<td>".$FuncionarioFiltro[$i]."</td>";
+                            echo "<td>".$TempoFiltro[$i]."</td>";
+                            echo "<td>".$ModeloFiltro[$i]."</td>";
+                            echo "</tr>";
+                        }
                     }
                 ?>
                 </tbody>

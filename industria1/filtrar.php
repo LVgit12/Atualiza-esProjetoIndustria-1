@@ -27,26 +27,6 @@
     $Tempo1 = json_decode(file_get_contents("tempoProd.json"), true);
     if (!is_array($Tempo1)) $Tempo1 = [];
 
-
-    // $arquivos = [
-    //     "data.json" => $datas,
-    //     "Producao.json" => $QuantProd,
-    //     "retrabalho.json" => $QuantRetrab,
-    //     "perdas.json" => $QuantPerda,
-    //     "funcionarios.json" => $QuantFuncionario,
-    //     "ModeloProd.json" => $modelos,
-    //     "tempoProd.json" => $Tempo1
-    //     ];
-    // $produtos = $arquivos["Producao.json"];
-    // $datas = $arquivos["data.json"];
-    // $data_inicial = $_GET["data_inicial"] ?? '';
-    // $data_final = $_GET["data_final"] ?? '';
-    // $prodsFiltrados = [];
-    // foreach($produtos as $produto){
-    //     if (!isset($produto['data'])) continue;
-    //     $data_produto = $produto['data'] // Skip if 'data' key is not set{
-    //     }
-    // } 
     
     $i = 0;
     

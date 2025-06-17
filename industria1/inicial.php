@@ -2,11 +2,17 @@
     // @see https://desenvolvimentoparaweb.com/css/css-breakpoints-maneira-correta/
 
     session_start();
-    $verificador = isset($_SESSION['filtrograficos']) ? $_SESSION['filtrograficos'] : false;
-    $datas[] = json_decode(file_get_contents("data.json"), true);
+    $verificador = $_SESSION['filtro'];
+    $verificadorgraficos = $_SESSION['filtrograficos'];
+    $datas = json_decode(file_get_contents("data.json"), true);
     $date = date("d-m-Y");
     $DataFiltro = json_decode(file_get_contents("DataFiltro.json"), true);
-    $index = array_search($date, $datas);
+    if(in_array($date, $datas)){
+        $index = array_search($date, $datas);
+    }
+    else{
+        $index = "vazio";
+    }
     $_SESSION['index'] = $index;
     if(count($datas) == 0) {
         $data ="0";
@@ -25,7 +31,7 @@
         $QuantPerdass[] = json_decode(file_get_contents("perdas.json"), true);
         $QuantFuncionarioss[] = json_decode(file_get_contents("funcionarios.json"), true);
         $id = array_search($_SESSION['usuario'], $emails);
-        array_push($datas, $data);
+
         $_SESSION['nomes'] =     $nomes;
         $_SESSION['senhas'] = $senhas;
         $_SESSION['emails'] = $emails;
@@ -232,7 +238,6 @@
                     <div class="menu-links" style="display: flex; flex: 1; justify-content: center;">
                         <a href="inicial.php">VISÃO GERAL</a>
                         <a href="desempenho.php">RELATÓRIO</a>
-                        <a href="gravar.php">IMPRIMIR DADOS</a>
                     </div>
                     <div class="user-info">
                         <a href="sair.php" class="sair" title="Sair">
@@ -278,7 +283,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#23243a" class="bi bi-x" viewBox="0 0 16 16">
                         <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
                         </svg>
-                        <span style="font-weight:700; color:#23243a;">REMOVER FILTRO</span>
+                        <span style="font-weight:700; color:#23243a;">Remover filtro</span>
                     </button>
                 </div>
                 <?php } ?>
@@ -294,7 +299,7 @@
                             <?php 
                                 if($verificador == false){
                                     $prod = json_decode(file_get_contents("Producao.json"), true);
-                                    if(empty($prod)){
+                                    if($index == "vazio"){
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
                                     }
                                     else{
@@ -323,9 +328,9 @@
                     <div class="card-body" style="background:#fff; border-radius:8px; overflow-x:auto; height:100%;">
                         <center><h3></br>
                             <?php 
-                                if($verificador){
+                                if($verificador == false){
                                     $perda = json_decode(file_get_contents("perdas.json"), true);
-                                    if(empty($perda)){
+                                    if($index == "vazio"){
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
                                     }
                                     else{
@@ -355,7 +360,7 @@
                             <?php 
                                 if($verificador == false){
                                     $Taxaprod = json_decode(file_get_contents("TxProd.json"), true);
-                                    if(empty($Taxaprod)){
+                                    if($index == "vazio"){
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
                                        
                                     }
@@ -389,7 +394,7 @@
                             <?php 
                                 if($verificador == false){
                                     $tr = json_decode(file_get_contents("Txrefugo.json"), true);
-                                    if(empty($tr)){   
+                                    if($index == "vazio"){   
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
                                     }
                                     else{
@@ -430,7 +435,7 @@
                             <?php 
                                 if($verificador == false){
                                     $tr = json_decode(file_get_contents("funcionarios.json"), true);
-                                    if(empty($tr)){
+                                    if($index == "vazio"){
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
                                     }
                                     else{
@@ -460,7 +465,7 @@
                             <?php 
                                 if($verificador == false){
                                     $Retrabalho = json_decode(file_get_contents("retrabalho.json"), true);
-                                    if(empty($Retrabalho)){
+                                    if($index == "vazio"){
                                         echo "Ainda não há dados cadastrados no dia de hoje!";
                                     }
                                     else{
@@ -476,6 +481,7 @@
                                         $totalRetrab += intval($item5);
                                     }
                                     echo $totalRetrab;
+                                    $verificador = false;
                                     $_SESSION['filtro'] = false;
                                 }
                             ?>
@@ -494,16 +500,17 @@
                                 <div class="cols-12 col-md-12 mb-0">
                                     <div class="card">
                                         <div class="card-details">
-                                            <p class="text-title"><h5><b>
+                                            <p class="text-title"><h7><b>
                                                 <?php $primeiroProd = reset($DataFiltro); $ultimoProd = end($DataFiltro);
-                                                    if ($verificador == true){
+                                                    if ($verificadorgraficos == true){
                                                         if ($primeiroProd == $ultimoProd) {
                                                             echo "Quantidade Produzida do dia: $primeiroProd"; 
                                                         } else {
                                                          echo "Quantidade Produzida dos dias: $primeiroProd a $ultimoProd";}}
                                                     else{
-                                                            echo "Quantidade Produzida do dia: $date";
-                                                         } ?></b></h5></p>
+                                                            echo "Quantidade Produzida nos últimos dias: ";
+                                                         }
+                                                     ?></b></h7></p>
                                             <p class="text-body"><?php include "grafico_Barra_QuantProd.php"; ?></p>
                                         </div>
                                     </div>    
@@ -511,15 +518,15 @@
                                 <div class="cols-12 col-md-4 mb-0">
                                     <div class="card">
                                         <div class="card-details">
-                                            <p class="text-title"><h5><b><?php $primeiroProd = reset($DataFiltro); $ultimoProd = end($DataFiltro);
-                                                    if ($verificador == true){
+                                            <p class="text-title"><h7><b><?php $primeiroProd = reset($DataFiltro); $ultimoProd = end($DataFiltro);
+                                                    if ($verificadorgraficos == true){
                                                         if ($primeiroProd == $ultimoProd) {
                                                             echo "Resumo da Produção do dia: $primeiroProd"; 
                                                         } else {
                                                          echo "Resumo Total das Produções dos dias: $primeiroProd a $ultimoProd";}}
                                                     else{
-                                                            echo "Resumo da Produção do dia: $date";
-                                                         } ?></h5></b></p>
+                                                            echo "Resumo da Produção dos últimos dias:";
+                                                         } ?></h7></b></p>
                                             <p class="text-body"><?php include "grafico_Rosca_Prod.php"; ?></p>
                                         </div>
                                     </div>    
@@ -527,15 +534,15 @@
                                 <div class="cols-12 col-md-4 mb-0">
                                     <div class="card">
                                         <div class="card-details">
-                                            <p class="text-title"><h5><b><?php $primeiroProd = reset($DataFiltro); $ultimoProd = end($DataFiltro);
-                                                    if ($verificador == true){
+                                            <p class="text-title"><h7><b><?php $primeiroProd = reset($DataFiltro); $ultimoProd = end($DataFiltro);
+                                                    if ($verificadorgraficos == true){
                                                         if ($primeiroProd == $ultimoProd) {
                                                             echo "Taxa de Produção do dia: $primeiroProd"; 
                                                         } else {
                                                          echo "Taxa das Produções dos dias: $primeiroProd a $ultimoProd";}}
                                                     else{
-                                                            echo "Taxa da Produção do dia: $date";
-                                                         } ?></h5></b></p>
+                                                            echo "Taxa da Produção dos dias anteriores:";
+                                                         } ?></h7></b></p>
                                             <p class="text-body"><?php include "grafico_TaxaProd.php"; ?></p>
                                         </div>
                                     </div>    
@@ -543,20 +550,22 @@
                                 <div class="cols-12 col-md-4 mb-0">
                                     <div class="card">
                                         <div class="card-details">
-                                            <p class="text-title"><h5><b><?php $primeiroProd = reset($DataFiltro); $ultimoProd = end($DataFiltro);
-                                                    if ($verificador == true){
+                                            <p class="text-title"><h7><b><?php $primeiroProd = reset($DataFiltro); $ultimoProd = end($DataFiltro);
+                                                    if ($verificadorgraficos == true){
                                                         if ($primeiroProd == $ultimoProd) {
                                                             echo "Taxa de Perda do dia: $primeiroProd"; 
                                                         } else {
                                                          echo "Taxa de Perdas dos dias: $primeiroProd a $ultimoProd";}}
                                                     else{
-                                                            echo "Taxa de Perda do dia: $date";
-                                                         } ?></h5></b></p>
+                                                            echo "Taxa de Perda dos dias anteriores: ";
+                                                         } ?></h7></b></p>
                                             <p class="text-body"><?php include "grafico_TaxaPerda.php"; ?></p>
                                         </div>
                                     </div>    
                                 </div>
-                            <?php $_SESSION['filtrograficos'] = false; ?>                    
+                            <?php 
+                            $verificadorgraficos = false;
+                            $_SESSION['filtrograficos'] = false; ?>                    
                             </div>
                         </div>
                     </div>
