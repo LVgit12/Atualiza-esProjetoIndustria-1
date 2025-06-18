@@ -1,5 +1,6 @@
 <?php
     $date = date("d/m/Y");
+        $verificador = $_SESSION['filtrograficos'];
     $datas = json_decode(file_get_contents("data.json"), true);
     $index = array_search($date, $datas);
     $DataFiltro = json_decode(file_get_contents("DataFiltro.json"), true);
