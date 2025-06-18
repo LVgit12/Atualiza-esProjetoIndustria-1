@@ -1,6 +1,6 @@
 <?php
     $_SESSION['filtro'] = false;
-    $_SESSION['filtrograficos'] =false;
+    $_SESSION['filtrograficos'] = false;
     $_SESSION['filtrorelatorio'] = false;
 ?>
 <!DOCTYPE html>

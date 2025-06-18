@@ -3,7 +3,7 @@
 
     session_start();
     $verificador = isset($_SESSION['filtro']) ? $_SESSION['filtro'] : null;
-    $verificadorgraficos = $_SESSION['filtrograficos'];
+    $verificadorgraficos = isset($_SESSION['filtrograficos']) ? $_SESSION['filtrograficos'] : null;
     $datas = json_decode(file_get_contents("data.json"), true);
     $date = date("d-m-Y");
     $DataFiltro = json_decode(file_get_contents("DataFiltro.json"), true);
